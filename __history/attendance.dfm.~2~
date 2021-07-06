@@ -23,9 +23,16 @@ object Form1: TForm1
     TabOrder = 0
     object AttendanceTab: TTabSheet
       Caption = #35760#24405#20986#21220
+      ExplicitWidth = 281
+      ExplicitHeight = 165
+    end
+    object StudentTab: TTabSheet
+      Caption = #26597#35810#20986#21220
       ImageIndex = 1
-      ExplicitLeft = 8
-      ExplicitTop = 28
+      ExplicitLeft = -116
+      ExplicitTop = -64
+      ExplicitWidth = 281
+      ExplicitHeight = 165
       object Panel1: TPanel
         Left = 0
         Top = 0
@@ -58,10 +65,6 @@ object Form1: TForm1
           ExplicitHeight = 726
         end
       end
-    end
-    object StudentTab: TTabSheet
-      Caption = #23398#29983#20986#21220
-      ImageIndex = 1
     end
   end
 end
