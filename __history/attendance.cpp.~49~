@@ -1,0 +1,45 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#include <Grids.hpp>
+#include <fstream>
+#pragma hdrstop
+
+#include "attendance.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TForm1 *Form1;
+
+//Classes
+student::student(String Tname, char Tsex, char Tid):name(Tname), sex(Tsex), id(Tid)
+{}
+//---------------------------------------------------------------------------
+__fastcall TForm1::TForm1(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::FormCreate(TObject *Sender)
+{
+	fstream studentList;
+	try
+	{
+		ifstream temp("StudentList.bin");
+		if(temp) throw (404);
+		temp.close();
+	}
+	catch(int e)
+	{
+		ofstream temp("StudentList.bin");
+		student s1("王冕",'M',‘1’);
+		temp.write((char*)&s1, sizeof(s1));
+	}
+	studentList("StudentList.bin");
+	AttendanceGrid->Cells[0][0]= "Name";
+	AttendanceGrid->Cells[1][0]= "Sex";
+	AttendanceGrid->Cells[2][0]= "Student Id";
+}
+//---------------------------------------------------------------------------
+

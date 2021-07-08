@@ -1,9 +1,9 @@
 object Form1: TForm1
   Left = 0
   Top = 0
-  Caption = 'Form1'
-  ClientHeight = 726
-  ClientWidth = 1078
+  Caption = #28165#21326#20986#21220#31243#24207
+  ClientHeight = 547
+  ClientWidth = 811
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,51 +11,56 @@ object Form1: TForm1
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 1078
-    Height = 726
-    ActivePage = StudentTab
+    Width = 811
+    Height = 547
+    ActivePage = AttendanceTab
     Align = alClient
     TabOrder = 0
     object AttendanceTab: TTabSheet
       Caption = #35760#24405#20986#21220
-      ImageIndex = 1
-      ExplicitLeft = 8
-      ExplicitTop = 28
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 1070
-        Height = 457
+        Width = 803
+        Height = 369
         Align = alTop
         TabOrder = 0
         object ListBox1: TListBox
           Left = 1
           Top = 1
           Width = 121
-          Height = 455
+          Height = 367
           Align = alLeft
           ItemHeight = 13
           TabOrder = 0
-          ExplicitLeft = 792
-          ExplicitTop = 320
+          ExplicitLeft = 224
+          ExplicitTop = 232
           ExplicitHeight = 97
         end
-        object StringGrid1: TStringGrid
+        object AttendanceGrid: TStringGrid
           Left = 122
           Top = 1
-          Width = 947
-          Height = 455
+          Width = 680
+          Height = 367
           Align = alClient
+          FixedCols = 0
           TabOrder = 1
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 1078
-          ExplicitHeight = 726
+          ExplicitLeft = 296
+          ExplicitTop = 192
+          ExplicitWidth = 121
+          ExplicitHeight = 105
+          RowHeights = (
+            24
+            24
+            24
+            24
+            24)
         end
       end
     end
