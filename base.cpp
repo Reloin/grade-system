@@ -27,21 +27,21 @@ public:
 class student
 {
     private:
-        string name;
+        char name[30];
         char sex;
         char id[11];
     public:
         student(){};//生成空的学生类
-        student(string name, char sex, const char id[11])
+        student(const char *name, const char sex, const char id[11])
         {
-            this->name = name;
+            strcpy(this->name, name);
             this->sex = sex;
             strcpy(this->id, id);
         }
-        void setName(string name){ this->name = name; }
+        void setName(const char *name){ strcpy(this->name, name); }
         void setSex(char sex){ this->sex = sex; }
         void setId(const char id[11]){ strcpy(this->id, id); }
-        void print(){ cout << name << " " << sex << " " << id << endl; }
+        void print(){ cout << name << "\t" << sex << "\t" << id << endl; }
 };
 
 //用于确认文件是否存在
@@ -55,18 +55,20 @@ void checkNameList()
 {
     try
     {
-        if(!existTest("studentList.bin")) {throw(404); }
+        if(!existTest("studentList.txt")) {throw(404); }
     }
     catch(int e)
     {
         //生成有三个学生的名单
-        ofstream temp("studentList.bin", ios_base::app);
-        student s1 = student("常清华", 'F', "2020010001");
-        student s2 = student("林北大", 'M', "2020010002");
-        student s3 = student("复旦大", 'M', "2020010003");
-        temp.write((char*)&s1, sizeof(s1));
-        temp.write((char*)&s2, sizeof(s2));
-        temp.write((char*)&s3, sizeof(s3));
+        ofstream temp;
+        temp.open("studentList.txt", ios_base::trunc);
+        student s[3];
+        s[0] = student("常清华", 'F', "2020010001");
+        s[1] = student("林北大", 'M', "2020010002");
+        s[2] = student("复旦大", 'M', "2020010003");
+        temp.write((char*)&s[0], sizeof(s[0]));
+        temp.write((char*)&s[1], sizeof(s[1]));
+        temp.write((char*)&s[2], sizeof(s[2]));
         temp.close();
     }
 }
@@ -74,7 +76,8 @@ void checkNameList()
 int main()
 {
     checkNameList();
-    ifstream studentList("studentList.bin", ios::in);
+    ifstream studentList;
+    studentList.open("studentList.txt", ios::in);
     studentList.seekg(0);
     student s;
     studentList.read((char*)&s, sizeof(s));
