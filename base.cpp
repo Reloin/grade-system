@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctime>
 #include <cstring>
 #include <fstream>
 #include <sys/stat.h>
@@ -7,19 +8,32 @@
 using namespace std;
 
 
-
-class time
+//-----------------------time类，用于记录出勤的日期----------------------------------------------
+class classTime
 {
-private:
-    int year;
-    int month;
-    int day;
-    int period;
-public:
-    time(int y = 2021, int m = 1, int d = 1, int p = 1): year(y), month(m), day(d), period(p)
-    {
-    }
-    ~time();
+    protected:
+        int week;//Sun = 0, Mon = 1 ...
+    private:
+        int year;
+        int month;
+        int day;
+        int period;
+        void setWeek(){
+            //月份1月为0以此类推，年份是从1900年到今天
+            std::tm time_in = { 0, 0, 0, day, month - 1, year - 1900};
+            std::time_t time_temp = std::mktime(&time_in);
+            const std::tm *time_out = std::localtime(&time_temp);
+            cout << time_out->tm_wday << endl;
+            week = time_out->tm_wday;
+            cout << week;
+        }
+    public:
+        classTime(int p, int d, int m, int y): period(p), day(d), month(m), year(y)
+        {
+            setWeek();
+        }
+        //~classTime(){};
+        void print(){ cout << week;}
 };
 
 
@@ -46,8 +60,8 @@ class student
 
 //用于确认文件是否存在
 inline bool existTest (const std::string& name) {
-  struct stat buffer;   
-  return (stat (name.c_str(), &buffer) == 0); 
+    struct stat buffer;   
+    return (stat (name.c_str(), &buffer) == 0); 
 }
 
 //如果没有指定文件，则生成指定的文件
@@ -75,12 +89,12 @@ void checkNameList()
 
 int main()
 {
+    //检查文件是否存在，然后读取学生文件
     checkNameList();
     ifstream studentList;
     studentList.open("studentList.txt", ios::in);
     studentList.seekg(0);
-    student s;
-    studentList.read((char*)&s, sizeof(s));
-    s.print();
+
+    
     return 0;
 }
