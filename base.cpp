@@ -3,11 +3,12 @@
 #include <cstring>
 #include <fstream>
 #include <sys/stat.h>
+#include <map>
 
 using namespace std;
 
 
-//-----------------------time类，用于记录出勤的日期----------------------------------------------
+//-----------------------time类，用于记录生日----------------------------------------------
 class date
 {
     protected:
@@ -28,7 +29,7 @@ class date
 class student : public date
 {
     private:
-        char name[30];
+        char name[20];
         char sex;
         char id[11];
     public:
@@ -50,6 +51,31 @@ class student : public date
         void setId(const char id[11]){ strcpy(this->id, id); }
         void print(){ cout << name << "\t" << sex << "\t" << id << "\t" << dob() << endl; }
 };
+
+//-------------------Course类，用于记录课程及学生分数----------------------------
+struct cmp_str
+{
+    bool operator()(const char *a, const char *b)
+    {
+        return strcmp(a, b) < 0;
+    }
+};
+class course
+{
+private:
+    char id[7];
+    char name[30];
+    float credit;
+    map<char[], float> score;
+    
+public:
+    course(const char *id, const char *name, float c): credit(c)
+    {
+        strcpy(this->id, id);
+        strcpy(this->name, name);
+    }
+};
+
 
 //用于确认文件是否存在
 inline bool existTest (const std::string& name) {
