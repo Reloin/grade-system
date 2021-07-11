@@ -3,9 +3,24 @@
 #include <cstring>
 #include <fstream>
 #include <sys/stat.h>
-#include <map>
 
 using namespace std;
+
+//----------------------info类，用于记录名字与ID----------------------------------------------
+class info
+{
+protected:
+    char name[30];
+    char id[11];
+public:
+    info(const char *name, const char *id)
+    {
+        strcpy(this->name, name);
+        strcpy(this->id, id);
+    }
+    info(){}
+};
+
 
 
 //-----------------------time类，用于记录生日----------------------------------------------
@@ -26,21 +41,17 @@ class date
 
 
 //----------------------------student类，记录学生信息------------------------------------------------------------------
-class student : public date
+class student : public date, public info
 {
     private:
-        char name[20];
         char sex;
-        char id[11];
     public:
         student(){}
-        student(const char *name, const char sex, const char id[11], date bd): date(bd)
+        student(const char *name, const char sex, const char *id, date bd): info(name, id), date(bd)
         {
-            strcpy(this->name, name);
             this->sex = sex;
-            strcpy(this->id, id);
         }
-        student(const char *name, const char sex, const char id[11], int y, int m, int d): date(y, m, d)
+        student(const char *name, const char sex, const char *id, int y, int m, int d): info(name, id), date(y, m, d)
         {
             strcpy(this->name, name);
             this->sex = sex;
@@ -60,22 +71,17 @@ struct cmp_str
         return strcmp(a, b) < 0;
     }
 };
-class course
+
+class course: public info
 {
 private:
-    char id[7];
-    char name[30];
     float credit;
-    map<char[], float> score;
     
 public:
-    course(const char *id, const char *name, float c): credit(c)
+    course(const char *name, const char *id, float c): info(name, id), credit(c)
     {
-        strcpy(this->id, id);
-        strcpy(this->name, name);
     }
 };
-
 
 //用于确认文件是否存在
 inline bool existTest (const std::string& name) {
