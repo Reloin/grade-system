@@ -81,6 +81,7 @@ private:
     float credit;
 public:
     course(const char *name, const char *id, float c): info(name, id), credit(c){}
+    float getCredit(){ return credit;}
 };
 
 //----------------compulsory和elective类，用于记gpa和pf课程
