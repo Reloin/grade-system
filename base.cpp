@@ -1,9 +1,9 @@
 #include <iostream>
-#include <ctime>
 #include <cstring>
 #include <fstream>
 #include <sys/stat.h>
 #include <map>
+#include <limits>
 
 using namespace std;
 
@@ -171,12 +171,38 @@ void checkCourseList()
     }
     
 }
+
 int main()
 {
     //检查文件是否存在，然后读取学生文件
     checkNameList();
     fstream studentList("studentList.txt", ios::in | ios::out | ios::app);
     studentList.seekg(0);
+    //student s = studentlist.read((char*)&s, sizeof(s));
+    while (true)
+    {
+        cout << "--------------------程设大学学生成绩记录系统--------------------" << endl;
+        cout << "-----------------------------选项-----------------------------" << endl;
+        cout << "1. 显示所以学生成绩" << endl;
+        cout << "______________________________________________________________" << endl;
+        cout << "请输入1至5的号码：";
+
+        int input;
+
+        cin >> input;
+        while (true)
+        {
+            if(cin.fail())
+            {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(),'\n');
+                cout << "输入错误，请输入1至5的号码：" ;
+            }
+            if(!cin.fail()) break;
+        }
+        
+
+    }
     
 
     return 0;
