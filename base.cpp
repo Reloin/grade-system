@@ -75,14 +75,6 @@ class student : public date, public info
 };
 
 //-------------------Course类，用于记录课程及学生分数----------------------------
-struct cmp_str
-{
-    bool operator()(const char *a, const char *b)
-    {
-        return strcmp(a, b) < 0;
-    }
-};
-
 class course: public info
 {
 private:
