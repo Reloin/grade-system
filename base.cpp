@@ -20,7 +20,16 @@ public:
         strcpy(this->id, id);
     }
     info(){}
-    virtual string getID(){ return id; }
+    virtual char *getID()
+    {
+        char *t = id;
+        return t;
+    }
+    virtual char *getName()
+    {
+        char *t = name;
+        return t;
+    }
 };
 
 
@@ -88,19 +97,20 @@ class compulsory : public course
 private:
     map<string, float> grade;
 public:
-    compulsory(const char *name, const char *id, float c, float g):course(name, id, c)
-    {
-        char temp[strlen(id)];
-        strcpy(temp, id);
-        grade[id] = g;
-    };
-    ~compulsory();
+    compulsory(const char *name, const char *id, float c):course(name, id, c){};
+    //~compulsory();
     void insertGradeByID(const char *id, float g)
     {
         char temp[strlen(id)];
         strcpy(temp, id);
         grade[id] = g;
     };
+    void list()
+    {
+        for (std::map<string,float>::iterator it=grade.begin(); it!=grade.end(); ++it)
+            cout << it->first << " | " << it->second << '\n';
+    }
+    float getGrade(const char *id){ return grade[id]; }
 };
 
 class elective
@@ -108,19 +118,20 @@ class elective
 private:
     map<string, char> grade;//p or f
 public:
-    elective(const char *name, const char *id, float c, char g)
+    elective(const char *name, const char *id, float c){};
+    //~elective();
+    void insertGradeByID(char *id, float g)
     {
         char temp[strlen(id)];
         strcpy(temp, id);
         grade[id] = g;
     };
-    ~elective();
-    void insertGradeByID(const char *id, float g)
+    void list()
     {
-        char temp[strlen(id)];
-        strcpy(temp, id);
-        grade[id] = g;
-    };
+        for (std::map<string, char>::iterator it=grade.begin(); it!=grade.end(); ++it)
+            cout << it->first << " | " << it->second << '\n';
+    }
+    char getGrade(const char *id){ return grade[id]; }
 };
 
 
@@ -139,9 +150,8 @@ void checkNameList()
     }
     catch(int e)
     {
-        //生成有三个学生的名单
-        ofstream temp;
-        temp.open("studentList.txt", ios_base::trunc);
+        //生成有三个student类的名单
+        ofstream temp("studentList.txt", ios_base::trunc);
         student s[3];
         s[0] = student("常清华", 'F', "2020010001", 2000, 1, 1);
         s[1] = student("林北大", 'M', "2020010002", 2001, 2, 2);
@@ -153,15 +163,28 @@ void checkNameList()
     }
 }
 
+void checkCourseList()
+{
+    try
+    {
+        if(!existTest("courseList.txt")) throw(404);
+    }
+    catch(int e)
+    {
+        //生成有一个比选课的compulsory类的文件
+        ofstream temp("courseList", ios::trunc);
+        compulsory c = compulsory("计算机程序设计基础(2)", "100001", 3);
+        temp.write((char*)&c, sizeof(c));
+    }
+    
+}
 int main()
 {
     //检查文件是否存在，然后读取学生文件
     checkNameList();
-    ifstream studentList;
-    studentList.open("studentList.txt", ios::in);
+    fstream studentList("studentList.txt", ios::in | ios::out | ios::app);
     studentList.seekg(0);
-    student s;
-    studentList.read((char*)&s, sizeof(s));
-    s.print();
+    
+
     return 0;
 }
