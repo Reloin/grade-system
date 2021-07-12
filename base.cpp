@@ -3,6 +3,7 @@
 #include <cstring>
 #include <fstream>
 #include <sys/stat.h>
+#include <map>
 
 using namespace std;
 
@@ -19,6 +20,7 @@ public:
         strcpy(this->id, id);
     }
     info(){}
+    virtual string getID(){ return id; }
 };
 
 
@@ -76,12 +78,51 @@ class course: public info
 {
 private:
     float credit;
-    
 public:
-    course(const char *name, const char *id, float c): info(name, id), credit(c)
-    {
-    }
+    course(const char *name, const char *id, float c): info(name, id), credit(c){}
 };
+
+//----------------compulsory和elective类，用于记gpa和pf课程
+class compulsory : public course
+{
+private:
+    map<string, float> grade;
+public:
+    compulsory(const char *name, const char *id, float c, float g):course(name, id, c)
+    {
+        char temp[strlen(id)];
+        strcpy(temp, id);
+        grade[id] = g;
+    };
+    ~compulsory();
+    void insertGradeByID(const char *id, float g)
+    {
+        char temp[strlen(id)];
+        strcpy(temp, id);
+        grade[id] = g;
+    };
+};
+
+class elective
+{
+private:
+    map<string, char> grade;//p or f
+public:
+    elective(const char *name, const char *id, float c, char g)
+    {
+        char temp[strlen(id)];
+        strcpy(temp, id);
+        grade[id] = g;
+    };
+    ~elective();
+    void insertGradeByID(const char *id, float g)
+    {
+        char temp[strlen(id)];
+        strcpy(temp, id);
+        grade[id] = g;
+    };
+};
+
 
 //用于确认文件是否存在
 inline bool existTest (const std::string& name) {
