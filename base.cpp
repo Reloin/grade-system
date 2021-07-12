@@ -58,15 +58,9 @@ class student : public date, public info
         char sex;
     public:
         student(){}
-        student(const char *name, const char sex, const char *id, date bd): info(name, id), date(bd)
-        {
-            this->sex = sex;
-        }
         student(const char *name, const char sex, const char *id, int y, int m, int d): info(name, id), date(y, m, d)
         {
-            strcpy(this->name, name);
             this->sex = sex;
-            strcpy(this->id, id);
         }
         void setName(const char *name){ strcpy(this->name, name); }
         void setSex(char sex){ this->sex = sex; }
@@ -81,7 +75,7 @@ private:
     float credit;
 public:
     course(const char *name, const char *id, float c): info(name, id), credit(c){}
-    float getCredit(){ return credit;}
+    virtual float getCredit(){ return credit;}
 };
 
 //----------------compulsory和elective类，用于记gpa和pf课程
@@ -94,8 +88,6 @@ public:
     //~compulsory();
     void insertGradeByID(const char *id, float g)
     {
-        char temp[strlen(id)];
-        strcpy(temp, id);
         grade[id] = g;
     };
     void list()
@@ -106,17 +98,15 @@ public:
     float getGrade(const char *id){ return grade[id]; }
 };
 
-class elective
+class elective : public course
 {
 private:
     map<string, char> grade;//p or f
 public:
-    elective(const char *name, const char *id, float c){};
+    elective(const char *name, const char *id, float c):course(name, id, c){};
     //~elective();
-    void insertGradeByID(char *id, float g)
+    void insertGradeByID(char *id, char g)
     {
-        char temp[strlen(id)];
-        strcpy(temp, id);
         grade[id] = g;
     };
     void list()
@@ -181,9 +171,9 @@ int main()
     //student s = studentlist.read((char*)&s, sizeof(s));
     while (true)
     {
-        cout << "--------------------程设大学学生成绩记录系统--------------------" << endl;
+        cout << endl << "--------------------程设大学学生成绩记录系统--------------------" << endl;
         cout << "-----------------------------选项-----------------------------" << endl;
-        cout << "1. 显示所以学生成绩" << endl;
+        cout << "1. 显示成绩" << endl;
         cout << "______________________________________________________________" << endl;
         cout << "请输入1至5的号码：";
 
@@ -196,7 +186,8 @@ int main()
             {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(),'\n');
-                cout << "输入错误，请输入1至5的号码：" ;
+                cout << "输入错误，请输入1至5的号码：";
+                cin >> input;
             }
             if(!cin.fail()) break;
         }
