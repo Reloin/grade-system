@@ -48,7 +48,7 @@ class date
     public:
         date(int y = 2000, int m = 1, int d = 1);
         date(const date &d);
-        QString dob();//以yyyy-mm-dd形式显示生日
+        virtual QString dob();//以yyyy-mm-dd形式显示生日
 };
 
 //----------------------------student类，记录学生信息------------------------------------------------------------------
@@ -58,7 +58,7 @@ class student : public date, public info
         char sex;
     public:
         student();
-        student(QString const &name, const char sex, QString const &id, int y, int m, int d);
+        student(QString const &name, char sex, QString const &id, int y, int m, int d);
         void setName(QString const &name);
         void setSex(char sex);
         void setId(QString const &id);
