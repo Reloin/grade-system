@@ -46,7 +46,7 @@
     </column>
     <column>
      <property name="text">
-      <string>生日</string>
+      <string>生日(年-月-日)</string>
      </property>
     </column>
    </widget>
