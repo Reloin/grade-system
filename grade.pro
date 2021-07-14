@@ -10,15 +10,18 @@ CONFIG += c++11
 
 SOURCES += \
     addstudentdialog.cpp \
+    coursedialog.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     addstudentdialog.h \
+    coursedialog.h \
     mainwindow.h
 
 FORMS += \
     addstudentdialog.ui \
+    coursedialog.ui \
     mainwindow.ui
 
 TRANSLATIONS += \

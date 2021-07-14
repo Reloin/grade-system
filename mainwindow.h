@@ -21,6 +21,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void addStudent();
+    void addCourse();
 
 private slots:
     void on_addStudentBtn_clicked();
@@ -28,6 +29,12 @@ private slots:
     void on_actionxin_triggered();
 
     void on_delStudentBtn_clicked();
+
+    void on_AddCourseBtn_clicked();
+
+    void on_action_triggered();
+
+    void on_delCourseBtn_clicked();
 
 private:
     Ui::MainWindow *ui;

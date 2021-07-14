@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "addstudentdialog.h"
+#include "coursedialog.h"
 
 #include <QDebug>
 
@@ -93,6 +94,18 @@ void MainWindow::addStudent()
     ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(dialog.getSex())));
     ui->studentTable->setItem(row, 2, new QTableWidgetItem(dialog.getID()));
 }
+
+void MainWindow::addCourse()
+{
+    courseDialog dialog;
+    dialog.setModal(true);
+    dialog.exec();
+
+    int col = ui->studentTable->columnCount();
+    ui->studentTable->insertColumn(col);
+    ui->studentTable->setHorizontalHeaderItem(col, new QTableWidgetItem(dialog.getName()));
+}
+
 void MainWindow::on_addStudentBtn_clicked()
 {
     addStudent();
@@ -117,7 +130,35 @@ void MainWindow::on_delStudentBtn_clicked()
         for (int i = 0; i < select.count(); i++) {
             QModelIndex index = select.at(i);
             ui->studentTable->removeRow(index.row());
-            qInfo() << index.row();
+        }
+    }
+}
+
+
+void MainWindow::on_AddCourseBtn_clicked()
+{
+    addCourse();
+}
+
+
+void MainWindow::on_action_triggered()
+{
+    addCourse();
+}
+
+
+void MainWindow::on_delCourseBtn_clicked()
+{
+    QMessageBox::StandardButton reply = QMessageBox::question(this,
+                                                              "删除课程",
+                                                              "此操作将不可逆，是否确定删除？",
+                                                              QMessageBox::Yes| QMessageBox::No);
+    if(reply == QMessageBox::Yes)
+    {
+        QModelIndexList select = ui->studentTable->selectionModel()->selectedColumns();
+        for (int i = 0; i < select.count(); i++) {
+            QModelIndex index = select.at(i);
+            ui->studentTable->removeColumn(index.column());
         }
     }
 }
