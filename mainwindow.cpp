@@ -17,11 +17,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
-void MainWindow::checkStudentList()
-{
-
-}
 //-------------------------类的方法-----------------------
 
 //info类的函数
@@ -84,7 +79,9 @@ char elective::getGrade(const QString &id)
     return grade[id];
 }
 
-void MainWindow::on_addStudentBtn_clicked()
+//--------------------------------界面操作-----------------------------------------
+
+void MainWindow::addStudent()
 {
     addStudentDialog dialog;
     dialog.setModal(true);
@@ -96,18 +93,32 @@ void MainWindow::on_addStudentBtn_clicked()
     ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(dialog.getSex())));
     ui->studentTable->setItem(row, 2, new QTableWidgetItem(dialog.getID()));
 }
+void MainWindow::on_addStudentBtn_clicked()
+{
+    addStudent();
+}
 
 
 void MainWindow::on_actionxin_triggered()
 {
-    addStudentDialog dialog;
-    dialog.setModal(true);
-    dialog.exec();
+    addStudent();
+}
 
-    int row = ui->studentTable->rowCount();
-    ui->studentTable->insertRow(row);
-    ui->studentTable->setItem(row, 0, new QTableWidgetItem(dialog.getName()));
-    ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(dialog.getSex())));
-    ui->studentTable->setItem(row, 2, new QTableWidgetItem(dialog.getID()));
+
+void MainWindow::on_delStudentBtn_clicked()
+{
+    QMessageBox::StandardButton reply = QMessageBox::question(this,
+                                                              "删除学生",
+                                                              "此操作将不可逆，是否确定删除？",
+                                                              QMessageBox::Yes| QMessageBox::No);
+    if(reply == QMessageBox::Yes)
+    {
+        QModelIndexList select = ui->studentTable->selectionModel()->selectedRows();
+        for (int i = 0; i < select.count(); i++) {
+            QModelIndex index = select.at(i);
+            ui->studentTable->removeRow(index.row());
+            qInfo() << index.row();
+        }
+    }
 }
 

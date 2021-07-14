@@ -23,9 +23,9 @@ QString addStudentDialog::getName()
 char addStudentDialog::getSex()
 {
     switch (ui->genderBox->currentIndex()) {
-    case 0: return 'M';
-    case 1: return 'F';
-    case 2: return 'O';
+    case 1: return 'M';
+    case 2: return 'F';
+    case 3: return 'O';
     default: return 'O';
     }
 }

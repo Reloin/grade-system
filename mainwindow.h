@@ -20,15 +20,17 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void addStudent();
 
 private slots:
     void on_addStudentBtn_clicked();
 
     void on_actionxin_triggered();
 
+    void on_delStudentBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
-    void checkStudentList();
 };
 
 //----------------------info类，用于记录名字与ID----------------------------------------------
