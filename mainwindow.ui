@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>801</width>
+    <height>604</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>程设大学成绩系统</string>
@@ -60,6 +66,58 @@
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="addStudentBtn">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>510</y>
+      <width>80</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>新增学生</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="delStudentBtn">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>540</y>
+      <width>80</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>删除学生</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="AddCourseBtn">
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>510</y>
+      <width>80</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>新增课程</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="delCourseBtn">
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>540</y>
+      <width>80</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>删除课程</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
@@ -67,11 +125,29 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>801</width>
      <height>20</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>编辑</string>
+    </property>
+    <addaction name="actionxin"/>
+    <addaction name="action"/>
+   </widget>
+   <addaction name="menu"/>
   </widget>
+  <action name="actionxin">
+   <property name="text">
+    <string>新增学生</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>新增课程</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

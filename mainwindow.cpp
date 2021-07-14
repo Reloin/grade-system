@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "addstudentdialog.h"
 
 #include <QDebug>
 
@@ -8,12 +9,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    student s = student("常清华", 'F', "2020010001", 2000, 1, 1);
-    ui->studentTable->insertRow(0);
-    ui->studentTable->setItem(0, 0, new QTableWidgetItem(s.getName()));
-    ui->studentTable->setItem(0, 1, new QTableWidgetItem(QString(s.getSex())));
-    ui->studentTable->setItem(0, 2, new QTableWidgetItem(s.getID()));
-    ui->studentTable->setItem(0, 3, new QTableWidgetItem(s.dob()));
 
 }
 
@@ -22,11 +17,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-QDataStream &operator<<(QDataStream &out, student &s)
-{
-    out << s.getName() << s.getSex() << s.getID() << s.dob();
-    return out;
-}
 
 void MainWindow::checkStudentList()
 {
@@ -54,7 +44,7 @@ QString date::dob()
 }
 
 //----------------student类的函数----------------
-student::student(QString const &name, char sex, QString const &id, int y, int m, int d): date(y, m, d), info(name, id)
+student::student(QString const &name, char sex, QString const &id): info(name, id)
 {
     this->sex = sex;
 }
@@ -93,3 +83,31 @@ char elective::getGrade(const QString &id)
 {
     return grade[id];
 }
+
+void MainWindow::on_addStudentBtn_clicked()
+{
+    addStudentDialog dialog;
+    dialog.setModal(true);
+    dialog.exec();
+
+    int row = ui->studentTable->rowCount();
+    ui->studentTable->insertRow(row);
+    ui->studentTable->setItem(row, 0, new QTableWidgetItem(dialog.getName()));
+    ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(dialog.getSex())));
+    ui->studentTable->setItem(row, 2, new QTableWidgetItem(dialog.getID()));
+}
+
+
+void MainWindow::on_actionxin_triggered()
+{
+    addStudentDialog dialog;
+    dialog.setModal(true);
+    dialog.exec();
+
+    int row = ui->studentTable->rowCount();
+    ui->studentTable->insertRow(row);
+    ui->studentTable->setItem(row, 0, new QTableWidgetItem(dialog.getName()));
+    ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(dialog.getSex())));
+    ui->studentTable->setItem(row, 2, new QTableWidgetItem(dialog.getID()));
+}
+

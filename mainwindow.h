@@ -21,11 +21,15 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_addStudentBtn_clicked();
+
+    void on_actionxin_triggered();
+
 private:
     Ui::MainWindow *ui;
     void checkStudentList();
 };
-
 
 //----------------------info类，用于记录名字与ID----------------------------------------------
 class info
@@ -52,13 +56,13 @@ class date
 };
 
 //----------------------------student类，记录学生信息------------------------------------------------------------------
-class student : public date, public info
+class student : public info
 {
     private:
         char sex;
     public:
         student();
-        student(QString const &name, char sex, QString const &id, int y, int m, int d);
+        student(QString const &name, char sex, QString const &id);
         void setName(QString const &name);
         void setSex(char sex);
         void setId(QString const &id);
@@ -97,8 +101,6 @@ public:
     char getGrade(QString const &id);
 };
 
-
-QDataStream &operator<<(QDataStream &out, const student &data);
-QDataStream &operator>>(QDataStream &in, student &data);
+void saveStudent(const student &);
 
 #endif // MAINWINDOW_H
