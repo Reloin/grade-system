@@ -5,13 +5,40 @@
 
 #include <QDebug>
 
+QDataStream &operator<<(QDataStream &out, const student &s)
+{
+    out << s.name << s.sex << s.id;
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, student &s)
+{
+    QString name, id;
+    char sex;
+    in >> name >> sex >> id;
+    s.setName(name);
+    s.setSex(sex);
+    s.setId(id);
+    return in;
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    loadStudent();
+    /*
+    QList<student *>::iterator i;
+    for (i = studentList.begin(); i < studentList.end() ; ++i)
+    {
+        int row = ui->studentTable->rowCount();
+        ui->studentTable->insertRow(row);
+        student temp = student((*i)->getName(), (*i)->getSex(), (*i)->getID());
+        ui->studentTable->setItem(row, 0, new QTableWidgetItem(temp.getName()));
+        ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(temp.getSex())));
+        ui->studentTable->setItem(row, 2, new QTableWidgetItem(temp.getID()));
+    }*/
 }
 
 MainWindow::~MainWindow()
@@ -27,25 +54,17 @@ info::info(QString const &name, QString const &id)
     this->name = name;
     this->id = id;
 }
+info::info(){}
 
 QString info::getID(){ return id; } //返回学生的学号
 QString info::getName(){ return name;} //返回学生姓名
-
-//----------------date类的函数----------------
-date::date(int y, int m, int d): year(y), month(m), day(d){};
-
-//返回生日日期
-QString date::dob()
-{
-    return QString("%1-%2-%3").arg(year).arg(month).arg(day);
-}
 
 //----------------student类的函数----------------
 student::student(QString const &name, char sex, QString const &id): info(name, id)
 {
     this->sex = sex;
 }
-
+student::student(){}
 
 void student::setName(const QString &name){ this->name = name; }
 void student::setSex(char sex){ this->sex = sex; }
@@ -116,15 +135,42 @@ void MainWindow::saveStudent()
 {
     QString path = QDir::currentPath() + "/studentlist.txt";
     QFile file(path);
-    qDebug() << path;
-    if(!file.open(QIODevice::WriteOnly))
+
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
     {
         QMessageBox::information(this, tr("文件出现错误"), file.errorString());
     }
 
     QDataStream out(&file);
     out.setVersion(QDataStream::Qt_4_5);
-    out << studentList;
+
+    QList<student *>::iterator i;
+    for (i = studentList.begin(); i != studentList.end() ; ++i)
+    {
+        out << i;
+    }
+    file.flush();
+    file.close();
+}
+
+void MainWindow::loadStudent()
+{
+    QString path = QDir::currentPath() + "/studentlist.txt";
+    QFile file(path);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        QMessageBox::information(this, tr("文件出现错误"), file.errorString());
+    }
+
+    QDataStream in(&file);
+    in.setVersion(QDataStream::Qt_4_5);
+    studentList.empty();
+    while (!in.atEnd()) {
+        student temp;
+        in >> temp;
+        studentList.append(&temp);
+    }
+
 }
 
 void MainWindow::on_addStudentBtn_clicked()

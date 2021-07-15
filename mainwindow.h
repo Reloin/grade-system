@@ -27,17 +27,6 @@ public:
     virtual QString getName();
 };
 
-//-----------------------time类，用于记录生日----------------------------------------------
-class date
-{
-    protected:
-        int year, month, day;
-    public:
-        date(int y = 2000, int m = 1, int d = 1);
-        date(const date &d);
-        virtual QString dob();//以yyyy-mm-dd形式显示生日
-};
-
 //----------------------------student类，记录学生信息------------------------------------------------------------------
 class student : public info
 {
@@ -50,6 +39,8 @@ class student : public info
         void setSex(char sex);
         void setId(QString const &id);
         char getSex();
+        friend QDataStream &operator<<(QDataStream &out, const student &s);
+        friend QDataStream &operator>>(QDataStream &in, student &s);
 };
 
 //-------------------Course类，用于记录课程及学生分数----------------------------
@@ -96,6 +87,7 @@ public:
     void addStudent();
     void addCourse();
     void saveStudent();
+    void loadStudent();
 
 private slots:
     void on_addStudentBtn_clicked();
