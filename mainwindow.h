@@ -22,6 +22,7 @@ public:
     ~MainWindow();
     void addStudent();
     void addCourse();
+    void saveStudent();
 
 private slots:
     void on_addStudentBtn_clicked();
@@ -109,7 +110,5 @@ public:
     void insertGradeByID(QString const &id, char g);
     char getGrade(QString const &id);
 };
-
-void saveStudent(const student &);
 
 #endif // MAINWINDOW_H

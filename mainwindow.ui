@@ -60,6 +60,26 @@
       <height>22</height>
      </rect>
     </property>
+    <item>
+     <property name="text">
+      <string>大一</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>大二</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>大三</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>大四</string>
+     </property>
+    </item>
    </widget>
    <widget class="QPushButton" name="addStudentBtn">
     <property name="geometry">

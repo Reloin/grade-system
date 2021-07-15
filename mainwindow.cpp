@@ -5,6 +5,8 @@
 
 #include <QDebug>
 
+QList<student> studentList;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -81,7 +83,7 @@ char elective::getGrade(const QString &id)
 }
 
 //--------------------------------界面操作-----------------------------------------
-
+//增加学生资料的函数
 void MainWindow::addStudent()
 {
     addStudentDialog dialog;
@@ -93,6 +95,10 @@ void MainWindow::addStudent()
     ui->studentTable->setItem(row, 0, new QTableWidgetItem(dialog.getName()));
     ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(dialog.getSex())));
     ui->studentTable->setItem(row, 2, new QTableWidgetItem(dialog.getID()));
+
+    student temp = student(dialog.getName(), dialog.getSex(), dialog.getID());
+    studentList.append(temp);
+    saveStudent();
 }
 
 void MainWindow::addCourse()
@@ -104,6 +110,20 @@ void MainWindow::addCourse()
     int col = ui->studentTable->columnCount();
     ui->studentTable->insertColumn(col);
     ui->studentTable->setHorizontalHeaderItem(col, new QTableWidgetItem(dialog.getName()));
+}
+
+void MainWindow::saveStudent()
+{
+    QFile file("studentList.txt");
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        QMessageBox::information(this, "无法打开文件", file.errorString());
+        return;
+    }
+
+    QDataStream out(&file);
+    out.setVersion(QDataStream::Qt_4_5);
+
 }
 
 void MainWindow::on_addStudentBtn_clicked()
