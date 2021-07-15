@@ -83,7 +83,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    QList<student*> studentList;
+    QList<student> studentList;
     void addStudent();
     void addCourse();
     void saveStudent();

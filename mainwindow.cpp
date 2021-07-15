@@ -28,17 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     loadStudent();
-    /*
-    QList<student *>::iterator i;
-    for (i = studentList.begin(); i < studentList.end() ; ++i)
-    {
-        int row = ui->studentTable->rowCount();
-        ui->studentTable->insertRow(row);
-        student temp = student((*i)->getName(), (*i)->getSex(), (*i)->getID());
-        ui->studentTable->setItem(row, 0, new QTableWidgetItem(temp.getName()));
-        ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(temp.getSex())));
-        ui->studentTable->setItem(row, 2, new QTableWidgetItem(temp.getID()));
-    }*/
+
 }
 
 MainWindow::~MainWindow()
@@ -73,8 +63,7 @@ char student::getSex(){ return sex; }
 
 
 //----------------course类的函数----------------
-course::course(QString const &name, QString const &id, float c): info(name, id), credit(c)
-{}
+course::course(QString const &name, QString const &id, float c): info(name, id), credit(c){}
 
 float course::getCredit(){ return credit;}
 
@@ -116,7 +105,7 @@ void MainWindow::addStudent()
     ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(temp.getSex())));
     ui->studentTable->setItem(row, 2, new QTableWidgetItem(temp.getID()));
 
-    studentList.append(&temp);
+    studentList.append(temp);
     saveStudent();
 }
 
@@ -144,7 +133,7 @@ void MainWindow::saveStudent()
     QDataStream out(&file);
     out.setVersion(QDataStream::Qt_4_5);
 
-    QList<student *>::iterator i;
+    QList<student>::iterator i;
     for (i = studentList.begin(); i != studentList.end() ; ++i)
     {
         out << i;
@@ -168,7 +157,7 @@ void MainWindow::loadStudent()
     while (!in.atEnd()) {
         student temp;
         in >> temp;
-        studentList.append(&temp);
+        studentList.append(temp);
     }
 
 }
