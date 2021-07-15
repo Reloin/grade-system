@@ -7,39 +7,12 @@
 #include <QDataStream>
 #include <QMessageBox>
 #include <QMap>
+#include <QDir>
 
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
-
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-    void addStudent();
-    void addCourse();
-    void saveStudent();
-
-private slots:
-    void on_addStudentBtn_clicked();
-
-    void on_actionxin_triggered();
-
-    void on_delStudentBtn_clicked();
-
-    void on_AddCourseBtn_clicked();
-
-    void on_action_triggered();
-
-    void on_delCourseBtn_clicked();
-
-private:
-    Ui::MainWindow *ui;
-};
 
 //----------------------info类，用于记录名字与ID----------------------------------------------
 class info
@@ -109,6 +82,36 @@ public:
     elective(QString const &name, QString const &id, float c);
     void insertGradeByID(QString const &id, char g);
     char getGrade(QString const &id);
+};
+
+//--------------------------------MainWindow类-----------------
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+    QList<student*> studentList;
+    void addStudent();
+    void addCourse();
+    void saveStudent();
+
+private slots:
+    void on_addStudentBtn_clicked();
+
+    void on_actionxin_triggered();
+
+    void on_delStudentBtn_clicked();
+
+    void on_AddCourseBtn_clicked();
+
+    void on_action_triggered();
+
+    void on_delCourseBtn_clicked();
+
+private:
+    Ui::MainWindow *ui;
 };
 
 #endif // MAINWINDOW_H

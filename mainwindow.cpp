@@ -5,7 +5,6 @@
 
 #include <QDebug>
 
-QList<student> studentList;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -46,6 +45,7 @@ student::student(QString const &name, char sex, QString const &id): info(name, i
 {
     this->sex = sex;
 }
+
 
 void student::setName(const QString &name){ this->name = name; }
 void student::setSex(char sex){ this->sex = sex; }
@@ -90,14 +90,14 @@ void MainWindow::addStudent()
     dialog.setModal(true);
     dialog.exec();
 
+    student temp = student(dialog.getName(), dialog.getSex(), dialog.getID());
     int row = ui->studentTable->rowCount();
     ui->studentTable->insertRow(row);
-    ui->studentTable->setItem(row, 0, new QTableWidgetItem(dialog.getName()));
-    ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(dialog.getSex())));
-    ui->studentTable->setItem(row, 2, new QTableWidgetItem(dialog.getID()));
+    ui->studentTable->setItem(row, 0, new QTableWidgetItem(temp.getName()));
+    ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(temp.getSex())));
+    ui->studentTable->setItem(row, 2, new QTableWidgetItem(temp.getID()));
 
-    student temp = student(dialog.getName(), dialog.getSex(), dialog.getID());
-    studentList.append(temp);
+    studentList.append(&temp);
     saveStudent();
 }
 
@@ -114,16 +114,17 @@ void MainWindow::addCourse()
 
 void MainWindow::saveStudent()
 {
-    QFile file("studentList.txt");
+    QString path = QDir::currentPath() + "/studentlist.txt";
+    QFile file(path);
+    qDebug() << path;
     if(!file.open(QIODevice::WriteOnly))
     {
-        QMessageBox::information(this, "无法打开文件", file.errorString());
-        return;
+        QMessageBox::information(this, tr("文件出现错误"), file.errorString());
     }
 
     QDataStream out(&file);
     out.setVersion(QDataStream::Qt_4_5);
-
+    out << studentList;
 }
 
 void MainWindow::on_addStudentBtn_clicked()
