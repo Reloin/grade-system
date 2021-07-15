@@ -15,7 +15,7 @@ public:
     explicit addStudentDialog(QWidget *parent = nullptr);
     ~addStudentDialog();
     QString getName();
-    char getSex();
+    QString getSex();
     QString getID();
 
 private:

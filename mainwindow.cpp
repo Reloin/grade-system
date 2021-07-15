@@ -10,7 +10,17 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    loadStudent();
 
+    QList<student>::iterator i;
+    for (i = studentList.begin(); i != studentList.end() ; ++i)
+    {
+        int row = ui->studentTable->rowCount();
+        ui->studentTable->insertRow(row);
+        ui->studentTable->setItem(row, 0, new QTableWidgetItem(i->getName()));
+        ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(i->getSex())));
+        ui->studentTable->setItem(row, 2, new QTableWidgetItem(i->getID()));
+    }
 }
 
 MainWindow::~MainWindow()
@@ -32,16 +42,16 @@ QString info::getID(){ return id; } //返回学生的学号
 QString info::getName(){ return name;} //返回学生姓名
 
 //----------------student类的函数----------------
-student::student(QString const &name, char sex, QString const &id): info(name, id)
+student::student(QString const &name,const QString &sex, QString const &id): info(name, id)
 {
     this->sex = sex;
 }
 student::student(){}
 
 void student::setName(const QString &name){ this->name = name; }
-void student::setSex(char sex){ this->sex = sex; }
+void student::setSex(const QString &sex){ this->sex = sex; }
 void student::setId(const QString &id){ this->id = id;}
-char student::getSex(){ return sex; }
+QString student::getSex(){ return sex; }
 
 
 //----------------course类的函数----------------
@@ -129,12 +139,23 @@ void MainWindow::loadStudent()
     QFile file(path);
     if(!file.open(QIODevice::ReadOnly))
     {
-        QMessageBox::information(this, tr("文件出现错误"), file.errorString());
+        QFile file("studentList.csv");
+        file.open(QIODevice::WriteOnly);
+        file.flush();
+        file.close();
+        return;
     }
 
-    QTextStream in(&file);
+    QTextStream *in = new QTextStream(&file);
     studentList.empty();
 
+    QStringList sList = in->readAll().split("\n");
+
+    for (int i = 0; i < sList.count() - 1; i++)
+    {
+        QStringList data = sList.at(i).split(";");
+        studentList.append(student(data.at(0), data.at(1), data.at(2)));
+    }
 
 }
 
@@ -161,8 +182,20 @@ void MainWindow::on_delStudentBtn_clicked()
     {
         QModelIndexList select = ui->studentTable->selectionModel()->selectedRows();
         for (int i = 0; i < select.count(); i++) {
-            QModelIndex index = select.at(i);
-            ui->studentTable->removeRow(index.row());
+            int index = select.at(i).row();
+            QString id = ui->studentTable->itemAt(index, 2)->text();
+
+            for (int t = 0; t != studentList.count() ; ++t)
+            {
+                student s = studentList.at(t);
+                if(QString::compare(s.getName(), id, Qt::CaseInsensitive))
+                {
+                    studentList.removeAt(t);
+                    break;
+                }
+            }
+            ui->studentTable->removeRow(index);
+
         }
     }
 

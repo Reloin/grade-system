@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QMap>
 #include <QDir>
+#include <QString>
 
 
 QT_BEGIN_NAMESPACE
@@ -31,14 +32,14 @@ public:
 class student : public info
 {
     private:
-        char sex;
+        QString sex;
     public:
         student();
-        student(QString const &name, char sex, QString const &id);
+        student(QString const &name,QString const &sex, QString const &id);
         void setName(QString const &name);
-        void setSex(char sex);
+        void setSex(QString const &sex);
         void setId(QString const &id);
-        char getSex();
+        QString getSex();
 };
 
 //-------------------Course类，用于记录课程及学生分数----------------------------
