@@ -10,8 +10,11 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    //读取csv文件中的学生数据然后存在studentList里
     loadStudent();
 
+    //将存储的学生数据展示出来
     QList<student>::iterator i;
     for (i = studentList.begin(); i != studentList.end() ; ++i)
     {
@@ -48,6 +51,7 @@ student::student(QString const &name,const QString &sex, QString const &id): inf
 }
 student::student(){}
 
+//返回一些private里的数据
 void student::setName(const QString &name){ this->name = name; }
 void student::setSex(const QString &sex){ this->sex = sex; }
 void student::setId(const QString &id){ this->id = id;}
@@ -86,10 +90,12 @@ char elective::getGrade(const QString &id)
 //增加学生资料的函数
 void MainWindow::addStudent()
 {
+    //弹出框框输入学生数据
     addStudentDialog dialog;
     dialog.setModal(true);
     dialog.exec();
 
+    //获取数据并显示与存进List里
     student temp = student(dialog.getName(), dialog.getSex(), dialog.getID());
     int row = ui->studentTable->rowCount();
     ui->studentTable->insertRow(row);
@@ -103,10 +109,12 @@ void MainWindow::addStudent()
 
 void MainWindow::addCourse()
 {
+    //弹出框框输入课程数据
     courseDialog dialog;
     dialog.setModal(true);
     dialog.exec();
 
+    //获取并存储课程数据
     int col = ui->studentTable->columnCount();
     ui->studentTable->insertColumn(col);
     ui->studentTable->setHorizontalHeaderItem(col, new QTableWidgetItem(dialog.getName()));
@@ -114,6 +122,7 @@ void MainWindow::addCourse()
 
 void MainWindow::saveStudent()
 {
+    //在程序的文档里创建csv文件
     QString path = QDir::currentPath() + "/studentlist.csv";
     QFile file(path);
 
@@ -124,6 +133,7 @@ void MainWindow::saveStudent()
 
     QTextStream out(&file);
 
+    //循环list里的学生逐个存入文件中
     QList<student>::iterator i;
     for (i = studentList.begin(); i != studentList.end() ; ++i)
     {
@@ -135,17 +145,20 @@ void MainWindow::saveStudent()
 
 void MainWindow::loadStudent()
 {
+    //在程序的文档中寻找list文件
     QString path = QDir::currentPath() + "/studentlist.csv";
     QFile file(path);
     if(!file.open(QIODevice::ReadOnly))
     {
-        QFile file("studentList.csv");
+        //如果没找到就创建一个空的
+        QFile file("studentlist.csv");
         file.open(QIODevice::WriteOnly);
         file.flush();
         file.close();
         return;
     }
 
+    //每一行都是一个学生数据，循环每一行读取并存入list
     QTextStream *in = new QTextStream(&file);
     studentList.empty();
 
