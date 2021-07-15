@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QFile>
 #include <QFileInfo>
-#include <QDataStream>
+#include <QTextStream>
 #include <QMessageBox>
 #include <QMap>
 #include <QDir>
@@ -39,8 +39,6 @@ class student : public info
         void setSex(char sex);
         void setId(QString const &id);
         char getSex();
-        friend QDataStream &operator<<(QDataStream &out, const student &s);
-        friend QDataStream &operator>>(QDataStream &in, student &s);
 };
 
 //-------------------Course类，用于记录课程及学生分数----------------------------

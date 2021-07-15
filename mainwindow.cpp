@@ -5,29 +5,11 @@
 
 #include <QDebug>
 
-QDataStream &operator<<(QDataStream &out, const student &s)
-{
-    out << s.name << s.sex << s.id;
-    return out;
-}
-
-QDataStream &operator>>(QDataStream &in, student &s)
-{
-    QString name, id;
-    char sex;
-    in >> name >> sex >> id;
-    s.setName(name);
-    s.setSex(sex);
-    s.setId(id);
-    return in;
-}
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    loadStudent();
 
 }
 
@@ -90,7 +72,7 @@ char elective::getGrade(const QString &id)
     return grade[id];
 }
 
-//--------------------------------界面操作-----------------------------------------
+//--------------------------------主界面函数-----------------------------------------
 //增加学生资料的函数
 void MainWindow::addStudent()
 {
@@ -122,7 +104,7 @@ void MainWindow::addCourse()
 
 void MainWindow::saveStudent()
 {
-    QString path = QDir::currentPath() + "/studentlist.txt";
+    QString path = QDir::currentPath() + "/studentlist.csv";
     QFile file(path);
 
     if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
@@ -130,13 +112,12 @@ void MainWindow::saveStudent()
         QMessageBox::information(this, tr("文件出现错误"), file.errorString());
     }
 
-    QDataStream out(&file);
-    out.setVersion(QDataStream::Qt_4_5);
+    QTextStream out(&file);
 
     QList<student>::iterator i;
     for (i = studentList.begin(); i != studentList.end() ; ++i)
     {
-        out << i;
+        out << i->getName() << ";" << i->getSex() << ";" << i->getID() << "\n";
     }
     file.flush();
     file.close();
@@ -144,24 +125,20 @@ void MainWindow::saveStudent()
 
 void MainWindow::loadStudent()
 {
-    QString path = QDir::currentPath() + "/studentlist.txt";
+    QString path = QDir::currentPath() + "/studentlist.csv";
     QFile file(path);
     if(!file.open(QIODevice::ReadOnly))
     {
         QMessageBox::information(this, tr("文件出现错误"), file.errorString());
     }
 
-    QDataStream in(&file);
-    in.setVersion(QDataStream::Qt_4_5);
+    QTextStream in(&file);
     studentList.empty();
-    while (!in.atEnd()) {
-        student temp;
-        in >> temp;
-        studentList.append(temp);
-    }
+
 
 }
 
+//-----------------------------------界面的按键-----------------------------------
 void MainWindow::on_addStudentBtn_clicked()
 {
     addStudent();
@@ -188,6 +165,8 @@ void MainWindow::on_delStudentBtn_clicked()
             ui->studentTable->removeRow(index.row());
         }
     }
+
+    saveStudent();
 }
 
 
