@@ -16,6 +16,8 @@ public:
     ~courseDialog();
     QString getName();
     QString getID();
+    int getCredit();
+    int getType();
 
 private:
     Ui::courseDialog *ui;

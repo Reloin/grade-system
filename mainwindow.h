@@ -9,6 +9,7 @@
 #include <QMap>
 #include <QDir>
 #include <QString>
+#include <QMapIterator>
 
 
 QT_BEGIN_NAMESPACE
@@ -49,7 +50,7 @@ private:
     float credit;
 public:
     course(QString const &name, QString const &id, float c);
-    virtual float getCredit();
+    float getCredit();
 };
 
 //----------------compulsory和elective类，用于记gpa和pf课程------------------
@@ -61,17 +62,18 @@ public:
     compulsory(QString const &name, QString const id, float c);
     //~compulsory();
     void insertGradeByID(QString const &id, float g);
+    QStringList getGrades();
     float getGrade(QString const &id);
 };
 
 class elective : public course
 {
 private:
-    QMap<QString, char> grade;//p or f
+    QMap<QString, QString> grade;//p or f
 public:
     elective(QString const &name, QString const &id, float c);
-    void insertGradeByID(QString const &id, char g);
-    char getGrade(QString const &id);
+    void insertGradeByID(QString const &id, QString const &g);
+    QString EgetGrade(QString const &id);
 };
 
 //--------------------------------MainWindow类-----------------
@@ -83,10 +85,15 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     QList<student> studentList;
+    QList<compulsory> courseList;
     void addStudent();
     void addCourse();
     void saveStudent();
     void loadStudent();
+    void saveCourse();
+    void loadCourse();
+    int searchByName(QString const &name);
+    int searchBYID(QString const &id);
 
 private slots:
     void on_addStudentBtn_clicked();
@@ -100,6 +107,8 @@ private slots:
     void on_action_triggered();
 
     void on_delCourseBtn_clicked();
+
+    void on_studentTable_cellChanged(int row, int column);
 
 private:
     Ui::MainWindow *ui;

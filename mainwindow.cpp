@@ -60,7 +60,6 @@ QString student::getSex(){ return sex; }
 
 //----------------course类的函数----------------
 course::course(QString const &name, QString const &id, float c): info(name, id), credit(c){}
-
 float course::getCredit(){ return credit;}
 
 //----------------compulsory类的函数----------------
@@ -75,13 +74,26 @@ float compulsory::getGrade(const QString &id)
     return grade[id];
 }
 
+QStringList compulsory::getGrades()
+{
+    QStringList temp;
+    QMap<QString, float>::const_iterator i = grade.begin();
+
+    while(i != grade.constEnd())
+    {
+        temp.append(i.key() + ":" + QString::number(i.value()));
+        ++i;
+    }
+    return temp;
+}
+
 //----------------elective类的函数----------------
 elective::elective(QString const &name, QString const &id, float c): course(name, id, c){};
-void elective::insertGradeByID(const QString &id, char g)
+void elective::insertGradeByID(const QString &id, QString const &g)
 {
     grade[id] = g;
 }
-char elective::getGrade(const QString &id)
+QString elective::EgetGrade(const QString &id)
 {
     return grade[id];
 }
@@ -118,13 +130,21 @@ void MainWindow::addCourse()
     int col = ui->studentTable->columnCount();
     ui->studentTable->insertColumn(col);
     ui->studentTable->setHorizontalHeaderItem(col, new QTableWidgetItem(dialog.getName()));
+    if(dialog.getType() == 0)
+    {
+        courseList.append(compulsory(dialog.getName(), dialog.getID(), dialog.getCredit()));
+    }/*
+    else if(dialog.getType() == 1)
+    {
+        courseList.append(elective(dialog.getName(), dialog.getID(), dialog.getCredit()));
+    }*/
+    saveCourse();
 }
 
 void MainWindow::saveStudent()
 {
     //在程序的文档里创建csv文件
-    QString path = QDir::currentPath() + "/studentlist.csv";
-    QFile file(path);
+    QFile file("studentlist.csv");
 
     if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
     {
@@ -146,12 +166,10 @@ void MainWindow::saveStudent()
 void MainWindow::loadStudent()
 {
     //在程序的文档中寻找list文件
-    QString path = QDir::currentPath() + "/studentlist.csv";
-    QFile file(path);
+    QFile file("studentlist.csv");
     if(!file.open(QIODevice::ReadOnly))
     {
         //如果没找到就创建一个空的
-        QFile file("studentlist.csv");
         file.open(QIODevice::WriteOnly);
         file.flush();
         file.close();
@@ -171,6 +189,92 @@ void MainWindow::loadStudent()
     }
 
 }
+
+void MainWindow::saveCourse()
+{
+    //在程序的文档里创建csv文件
+    QFile file("courselist.csv");
+
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+    {
+        QMessageBox::information(this, tr("文件出现错误"), file.errorString());
+    }
+
+    QTextStream out(&file);
+
+    //循环list里的课程逐个存入文件中
+    QList<compulsory>::iterator i;
+    for (i = courseList.begin(); i != courseList.end() ; ++i)
+    {
+        out << i->getName() << ";" << i->getID() << ";" << i->getCredit();
+
+        QStringList grades = i->getGrades();
+        for (int j = 0; j < grades.count(); j++)
+        {
+            QStringList data = grades.at(j).split(":");
+            out << ";" << data.at(0) << ":" << data.at(1);
+        }
+        out << "\n";
+
+    }
+    file.flush();
+    file.close();
+}
+
+void MainWindow::loadCourse()
+{
+    //在程序的文档中寻找list文件
+    QFile file("courselist.csv");
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        //如果没找到就创建一个空的
+        file.open(QIODevice::WriteOnly);
+        file.flush();
+        file.close();
+        return;
+    }
+
+    //每一行都是一个学生数据，循环每一行读取并存入list
+    QTextStream *in = new QTextStream(&file);
+    studentList.empty();
+
+    QStringList sList = in->readAll().split("\n");
+
+    for (int i = 0; i < sList.count() - 1; i++)
+    {
+        QStringList data = sList.at(i).split(";");
+        studentList.append(student(data.at(0), data.at(1), data.at(2)));
+    }
+
+}
+
+
+
+//搜索学生条目
+int MainWindow::searchByName(QString const &name)
+{
+    for (int i = 0; i < ui->studentTable->rowCount(); i++)
+    {
+        if(QString::compare(ui->studentTable->item(i, 0)->text(), name, Qt::CaseInsensitive))
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int MainWindow::searchBYID(QString const &id)
+{
+    for (int i = 0; i < ui->studentTable->rowCount(); i++)
+    {
+        if(QString::compare(ui->studentTable->item(i, 2)->text(), id, Qt::CaseInsensitive))
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
 
 //-----------------------------------界面的按键-----------------------------------
 void MainWindow::on_addStudentBtn_clicked()
@@ -196,9 +300,9 @@ void MainWindow::on_delStudentBtn_clicked()
         QModelIndexList select = ui->studentTable->selectionModel()->selectedRows();
         for (int i = 0; i < select.count(); i++) {
             int index = select.at(i).row();
-            QString id = ui->studentTable->itemAt(index, 2)->text();
-
-            for (int t = 0; t != studentList.count() ; ++t)
+            QString id = ui->studentTable->item(index, 2)->text();
+            int t;
+            for (t = 0; t != studentList.count() ; ++t)
             {
                 student s = studentList.at(t);
                 if(QString::compare(s.getName(), id, Qt::CaseInsensitive))
@@ -208,7 +312,6 @@ void MainWindow::on_delStudentBtn_clicked()
                 }
             }
             ui->studentTable->removeRow(index);
-
         }
     }
 
@@ -241,6 +344,19 @@ void MainWindow::on_delCourseBtn_clicked()
             QModelIndex index = select.at(i);
             ui->studentTable->removeColumn(index.column());
         }
+    }
+}
+
+
+void MainWindow::on_studentTable_cellChanged(int row, int column)
+{
+    if(column > 2)
+    {
+        compulsory temp = courseList.at(column - 3);
+        temp.insertGradeByID(ui->studentTable->item(row, 2)->text(), ui->studentTable->item(row, column)->text().toFloat());
+        courseList[column - 3] = temp;
+        temp = courseList.at(column - 3);
+        saveCourse();
     }
 }
 

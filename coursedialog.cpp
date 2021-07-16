@@ -22,3 +22,13 @@ QString courseDialog::getID()
 {
     return ui->courseIDBox->text();
 }
+
+int courseDialog::getCredit()
+{
+    return ui->creditBox->value();
+}
+
+int courseDialog::getType()
+{
+    return ui->courseTypeBox->currentIndex();
+}
