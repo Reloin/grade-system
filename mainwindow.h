@@ -56,9 +56,8 @@ public:
 //----------------compulsory和elective类，用于记gpa和pf课程------------------
 class compulsory : public course
 {
-private:
-    QMap<QString, float> grade;
 public:
+    QMap<QString, float> grade;
     compulsory(QString const &name, QString const id, float c);
     //~compulsory();
     void insertGradeByID(QString const &id, float g);
