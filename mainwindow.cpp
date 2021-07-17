@@ -332,7 +332,9 @@ void MainWindow::on_delStudentBtn_clicked()
         for (int i = 0; i < select.count(); i++) {
             QModelIndex index = select.at(i);
             QString id = ui->studentTable->item(index.row(), 2)->text();
-            //removeGrade(index.column() - 2, id);
+            for (int j = 0; j + 3 < ui->studentTable->columnCount(); j++) {
+                removeGrade(j, id);
+            }
             studentList.removeAt(searchByID(id));
 
             ui->studentTable->removeRow(index.row());
