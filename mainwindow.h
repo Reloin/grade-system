@@ -91,8 +91,9 @@ public:
     void loadStudent();
     void saveCourse();
     void loadCourse();
+    void removeGrade(int i,QString const &id);
     int searchByName(QString const &name);
-    int searchBYID(QString const &id);
+    int searchByID(QString const &id);
 
 private slots:
     void on_addStudentBtn_clicked();

@@ -270,14 +270,20 @@ void MainWindow::loadCourse()
     }
 }
 
-
+void MainWindow::removeGrade(int i, QString const &id)
+{
+    compulsory c = courseList.at(i);
+    c.grade.remove(id);
+    courseList.replace(i, c);
+}
 
 //搜索学生条目
 int MainWindow::searchByName(QString const &name)
 {
-    for (int i = 0; i < ui->studentTable->rowCount(); i++)
+    for (int i = 0; i < studentList.count(); i++)
     {
-        if(QString::compare(ui->studentTable->item(i, 0)->text(), name, Qt::CaseInsensitive))
+        student temp = studentList.at(i);
+        if(QString::compare(temp.getName(), name, Qt::CaseInsensitive) == 0)
         {
             return i;
         }
@@ -285,12 +291,15 @@ int MainWindow::searchByName(QString const &name)
     return -1;
 }
 
-int MainWindow::searchBYID(QString const &id)
+int MainWindow::searchByID(QString const &id)
 {
-    for (int i = 0; i < ui->studentTable->rowCount(); i++)
+    for (int i = 0; i < studentList.count(); i++)
     {
-        if(QString::compare(ui->studentTable->item(i, 2)->text(), id, Qt::CaseInsensitive))
+        student temp = studentList.at(i);
+        if(QString::compare(temp.getID(), id, Qt::CaseInsensitive) == 0)
         {
+            qDebug() << "Name in list:" << temp.getID();
+            qDebug() << "Id given:" << id;
             return i;
         }
     }
@@ -321,23 +330,17 @@ void MainWindow::on_delStudentBtn_clicked()
     {
         QModelIndexList select = ui->studentTable->selectionModel()->selectedRows();
         for (int i = 0; i < select.count(); i++) {
-            int index = select.at(i).row();
-            QString id = ui->studentTable->item(index, 2)->text();
-            int t;
-            for (t = 0; t != studentList.count() ; ++t)
-            {
-                student s = studentList.at(t);
-                if(QString::compare(s.getName(), id, Qt::CaseInsensitive))
-                {
-                    studentList.removeAt(t);
-                    break;
-                }
-            }
-            ui->studentTable->removeRow(index);
+            QModelIndex index = select.at(i);
+            QString id = ui->studentTable->item(index.row(), 2)->text();
+            //removeGrade(index.column() - 2, id);
+            studentList.removeAt(searchByID(id));
+
+            ui->studentTable->removeRow(index.row());
         }
     }
 
     saveStudent();
+    saveCourse();
 }
 
 
@@ -365,7 +368,9 @@ void MainWindow::on_delCourseBtn_clicked()
         for (int i = 0; i < select.count(); i++) {
             QModelIndex index = select.at(i);
             ui->studentTable->removeColumn(index.column());
+
         }
+        saveCourse();
     }
 }
 
