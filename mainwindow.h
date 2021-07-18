@@ -50,6 +50,7 @@ private:
     float credit;
 public:
     course(QString const &name, QString const &id, float c);
+    course();
     float getCredit();
 };
 
@@ -59,6 +60,7 @@ class compulsory : public course
 public:
     QMap<QString, float> grade;
     compulsory(QString const &name, QString const id, float c);
+    compulsory();
     //~compulsory();
     void insertGradeByID(QString const &id, float g);
     QStringList getGrades();
@@ -83,17 +85,16 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    QList<student> studentList;
-    QList<compulsory> courseList;
+    QMap<QString, student> studentList;
+    QMap<QString, compulsory> compulsoryList;
+    QMap<QString, elective> electiveList;
     void addStudent();
     void addCourse();
     void saveStudent();
     void loadStudent();
     void saveCourse();
     void loadCourse();
-    void removeGrade(int i,QString const &id);
-    int searchByName(QString const &name);
-    int searchByID(QString const &id);
+    void removeGrade(QString const &courseID,QString const &studentID);
 
 private slots:
     void on_addStudentBtn_clicked();

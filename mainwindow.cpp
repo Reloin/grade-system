@@ -16,27 +16,34 @@ MainWindow::MainWindow(QWidget *parent)
     loadCourse();
 
     //将存储的学生数据展示出来
-    QList<student>::iterator i;
-    for (i = studentList.begin(); i != studentList.end() ; i++)
+    QMap<QString, student>::const_iterator s = studentList.constBegin();
+    while (s != studentList.constEnd())
     {
         int row = ui->studentTable->rowCount();
         ui->studentTable->insertRow(row);
-        ui->studentTable->setItem(row, 0, new QTableWidgetItem(i->getName()));
-        ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(i->getSex())));
-        ui->studentTable->setItem(row, 2, new QTableWidgetItem(i->getID()));
+        student temp = s.value();
+        ui->studentTable->setItem(row, 0, new QTableWidgetItem(temp.getName()));
+        ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(temp.getSex())));
+        ui->studentTable->setItem(row, 2, new QTableWidgetItem(temp.getID()));
+        s++;
     }
 
-    QList<compulsory>::iterator c;
-    for(c = courseList.begin(); c != courseList.end(); ++c)
+    QMap<QString, compulsory>::const_iterator c = compulsoryList.constBegin();
+    while(c != compulsoryList.constEnd())
     {
         int col = ui->studentTable->columnCount();
+        compulsory temp = c.value();
         ui->studentTable->insertColumn(col);
-        ui->studentTable->setHorizontalHeaderItem(col, new QTableWidgetItem(c->getName()));
+        QTableWidgetItem *item = new QTableWidgetItem();
+        item->setText(temp.getName());
+        item->setData(Qt::WhatsThisRole, temp.getID());
+        ui->studentTable->setHorizontalHeaderItem(col, item);
         for(int row = 0; row < ui->studentTable->rowCount(); row++)
         {
             QString id = ui->studentTable->item(row, 2)->text();
-            ui->studentTable->setItem(row, col, new QTableWidgetItem(QString::number(c->grade[id])));
+            ui->studentTable->setItem(row, col, new QTableWidgetItem(QString::number(temp.getGrade(id))));
         }
+        c++;
     }
 
 }
@@ -75,10 +82,12 @@ QString student::getSex(){ return sex; }
 
 //----------------course类的函数----------------
 course::course(QString const &name, QString const &id, float c): info(name, id), credit(c){}
+course::course(){}
 float course::getCredit(){ return credit;}
 
 //----------------compulsory类的函数----------------
 compulsory::compulsory(QString const &name, QString const id, float c): course(name, id, c){};
+compulsory::compulsory(){}
 void compulsory::insertGradeByID(QString const &id, float g)
 {
     grade[id] = g;
@@ -92,8 +101,7 @@ float compulsory::getGrade(const QString &id)
 QStringList compulsory::getGrades()
 {
     QStringList temp;
-    QMap<QString, float>::const_iterator i = grade.begin();
-
+    QMap<QString, float>::const_iterator i = grade.constBegin();
     while(i != grade.constEnd())
     {
         temp.append(i.key() + ":" + QString::number(i.value()));
@@ -130,7 +138,7 @@ void MainWindow::addStudent()
     ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(temp.getSex())));
     ui->studentTable->setItem(row, 2, new QTableWidgetItem(temp.getID()));
 
-    studentList.append(temp);
+    studentList[temp.getID()] = temp;
     saveStudent();
 }
 
@@ -144,10 +152,14 @@ void MainWindow::addCourse()
     //获取并存储课程数据
     int col = ui->studentTable->columnCount();
     ui->studentTable->insertColumn(col);
-    ui->studentTable->setHorizontalHeaderItem(col, new QTableWidgetItem(dialog.getName()));
+    QTableWidgetItem *item = new QTableWidgetItem();
+    item->setText(dialog.getName());
+    item->setData(Qt::WhatsThisRole, dialog.getID());
+    ui->studentTable->setHorizontalHeaderItem(col, item);
+
     if(dialog.getType() == 0)
     {
-        courseList.append(compulsory(dialog.getName(), dialog.getID(), dialog.getCredit()));
+        compulsoryList[dialog.getID()] = compulsory(dialog.getName(), dialog.getID(), dialog.getCredit());
     }/*
     else if(dialog.getType() == 1)
     {
@@ -169,10 +181,12 @@ void MainWindow::saveStudent()
     QTextStream out(&file);
 
     //循环list里的学生逐个存入文件中
-    QList<student>::iterator i;
-    for (i = studentList.begin(); i != studentList.end() ; i++)
+    QMap<QString, student>::const_iterator s = studentList.constBegin();
+    while (s != studentList.constEnd())
     {
-        out << i->getName() << ";" << i->getSex() << ";" << i->getID() << "\n";
+        student temp = s.value();
+        out << temp.getName() << ";" << temp.getSex() << ";" << temp.getID() << "\n";
+        s++;
     }
     file.flush();
     file.close();
@@ -200,7 +214,8 @@ void MainWindow::loadStudent()
     for (int i = 0; i < sList.count() - 1; i++)
     {
         QStringList data = sList.at(i).split(";");
-        studentList.append(student(data.at(0), data.at(1), data.at(2)));
+        //0:name, 1:sex, 2:id
+        studentList[data.at(2)] = student(data.at(0), data.at(1), data.at(2));
     }
 
 }
@@ -218,19 +233,20 @@ void MainWindow::saveCourse()
     QTextStream out(&file);
 
     //循环list里的课程逐个存入文件中
-    QList<compulsory>::iterator i;
-    for (i = courseList.begin(); i != courseList.end() ; i++)
+    QMap<QString, compulsory>::const_iterator c = compulsoryList.constBegin();
+    while(c != compulsoryList.constEnd())
     {
-        out << i->getName() << ";" << i->getID() << ";" << i->getCredit();
+        compulsory temp = c.value();
+        out << temp.getName() << ";" << temp.getID() << ";" << temp.getCredit();
 
-        QStringList grades = i->getGrades();
+        QStringList grades = temp.getGrades();
         for (int j = 0; j < grades.count(); j++)
         {
             QStringList data = grades.at(j).split(":");
             out << ";" << data.at(0) << ":" << data.at(1);
         }
         out << "\n";
-
+        c++;
     }
     file.flush();
     file.close();
@@ -251,7 +267,7 @@ void MainWindow::loadCourse()
 
     //每一行都是一个学生数据，循环每一行读取并存入list
     QTextStream *in = new QTextStream(&file);
-    courseList.empty();
+    compulsoryList.empty();
 
     QStringList cList = in->readAll().split("\n");
 
@@ -265,45 +281,16 @@ void MainWindow::loadCourse()
             QStringList data = entry.at(j).split(":");
             c.insertGradeByID(data.at(0), data.at(1).toFloat());
         }
-        courseList.append(c);
+        compulsoryList[c.getID()] = c;
 
     }
 }
 
-void MainWindow::removeGrade(int i, QString const &id)
+void MainWindow::removeGrade(QString const &courseID, QString const &studentID)
 {
-    compulsory c = courseList.at(i);
-    c.grade.remove(id);
-    courseList.replace(i, c);
-}
-
-//搜索学生条目
-int MainWindow::searchByName(QString const &name)
-{
-    for (int i = 0; i < studentList.count(); i++)
-    {
-        student temp = studentList.at(i);
-        if(QString::compare(temp.getName(), name, Qt::CaseInsensitive) == 0)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
-int MainWindow::searchByID(QString const &id)
-{
-    for (int i = 0; i < studentList.count(); i++)
-    {
-        student temp = studentList.at(i);
-        if(QString::compare(temp.getID(), id, Qt::CaseInsensitive) == 0)
-        {
-            qDebug() << "Name in list:" << temp.getID();
-            qDebug() << "Id given:" << id;
-            return i;
-        }
-    }
-    return -1;
+    compulsory c = compulsoryList[courseID];
+    c.grade.remove(studentID);
+    compulsoryList[courseID] = c;
 }
 
 
@@ -333,9 +320,9 @@ void MainWindow::on_delStudentBtn_clicked()
             QModelIndex index = select.at(i);
             QString id = ui->studentTable->item(index.row(), 2)->text();
             for (int j = 0; j + 3 < ui->studentTable->columnCount(); j++) {
-                removeGrade(j, id);
+                //removeGrade(, id);
             }
-            studentList.removeAt(searchByID(id));
+            studentList.remove(id);
 
             ui->studentTable->removeRow(index.row());
         }
@@ -381,9 +368,11 @@ void MainWindow::on_studentTable_cellChanged(int row, int column)
 {
     if(column > 2)
     {
-        compulsory temp = courseList.at(column - 3);
+        QTableWidgetItem *item = ui->studentTable->horizontalHeaderItem(column);
+        QVariant v = item->data(Qt::WhatsThisRole);
+        compulsory temp = compulsoryList[v.toString()];
         temp.insertGradeByID(ui->studentTable->item(row, 2)->text(), ui->studentTable->item(row, column)->text().toFloat());
-        courseList.replace(column - 3, temp);
+        compulsoryList[temp.getID()] = temp;
         saveCourse();
     }
 }
