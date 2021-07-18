@@ -130,16 +130,19 @@ void MainWindow::addStudent()
     dialog.setModal(true);
     dialog.exec();
 
-    //获取数据并显示与存进List里
-    student temp = student(dialog.getName(), dialog.getSex(), dialog.getID());
-    int row = ui->studentTable->rowCount();
-    ui->studentTable->insertRow(row);
-    ui->studentTable->setItem(row, 0, new QTableWidgetItem(temp.getName()));
-    ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(temp.getSex())));
-    ui->studentTable->setItem(row, 2, new QTableWidgetItem(temp.getID()));
+    if(dialog.Accepted)
+    {
+        //获取数据并显示与存进List里
+        student temp = student(dialog.getName(), dialog.getSex(), dialog.getID());
+        int row = ui->studentTable->rowCount();
+        ui->studentTable->insertRow(row);
+        ui->studentTable->setItem(row, 0, new QTableWidgetItem(temp.getName()));
+        ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(temp.getSex())));
+        ui->studentTable->setItem(row, 2, new QTableWidgetItem(temp.getID()));
 
-    studentList[temp.getID()] = temp;
-    saveStudent();
+        studentList[temp.getID()] = temp;
+        saveStudent();
+    }
 }
 
 void MainWindow::addCourse()
@@ -149,29 +152,32 @@ void MainWindow::addCourse()
     dialog.setModal(true);
     dialog.exec();
 
-    //获取并存储课程数据
-    int col = ui->studentTable->columnCount();
-    ui->studentTable->insertColumn(col);
-    QTableWidgetItem *item = new QTableWidgetItem();
-    item->setText(dialog.getName());
-    item->setData(Qt::WhatsThisRole, dialog.getID());
-    ui->studentTable->setHorizontalHeaderItem(col, item);
+    if(dialog.Accepted)
+    {
+        //获取并存储课程数据
+        int col = ui->studentTable->columnCount();
+        ui->studentTable->insertColumn(col);
+        QTableWidgetItem *item = new QTableWidgetItem();
+        item->setText(dialog.getName());
+        item->setData(Qt::WhatsThisRole, dialog.getID());
+        ui->studentTable->setHorizontalHeaderItem(col, item);
 
-    if(dialog.getType() == 0)
-    {
-        compulsoryList[dialog.getID()] = compulsory(dialog.getName(), dialog.getID(), dialog.getCredit());
-    }/*
-    else if(dialog.getType() == 1)
-    {
-        courseList.append(elective(dialog.getName(), dialog.getID(), dialog.getCredit()));
-    }*/
-    saveCourse();
+        if(dialog.getType() == 0)
+        {
+            compulsoryList[dialog.getID()] = compulsory(dialog.getName(), dialog.getID(), dialog.getCredit());
+        }/*
+        else if(dialog.getType() == 1)
+        {
+            courseList.append(elective(dialog.getName(), dialog.getID(), dialog.getCredit()));
+        }*/
+        saveCourse();
+    }
 }
 
 void MainWindow::saveStudent()
 {
     //在程序的文档里创建csv文件
-    QFile file("studentlist.csv");
+    QFile file(studentFileName);
 
     if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
     {
@@ -195,7 +201,7 @@ void MainWindow::saveStudent()
 void MainWindow::loadStudent()
 {
     //在程序的文档中寻找list文件
-    QFile file("studentlist.csv");
+    QFile file(studentFileName);
     if(!file.open(QIODevice::ReadOnly))
     {
         //如果没找到就创建一个空的
@@ -223,7 +229,7 @@ void MainWindow::loadStudent()
 void MainWindow::saveCourse()
 {
     //在程序的文档里创建csv文件
-    QFile file("courselist.csv");
+    QFile file(compulsoryFileName);
 
     if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
     {
@@ -255,7 +261,7 @@ void MainWindow::saveCourse()
 void MainWindow::loadCourse()
 {
     //在程序的文档中寻找list文件
-    QFile file("courselist.csv");
+    QFile file(compulsoryFileName);
     if(!file.open(QIODevice::ReadOnly))
     {
         //如果没找到就创建一个空的

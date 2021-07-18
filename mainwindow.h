@@ -16,6 +16,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+
 //----------------------info类，用于记录名字与ID----------------------------------------------
 class info
 {
@@ -113,6 +114,9 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QString studentFileName = "studentList.csv";
+    QString compulsoryFileName = "compulsoryList.csv";
+    QString electiveFileName = "electiveList.csv";
 };
 
 #endif // MAINWINDOW_H
