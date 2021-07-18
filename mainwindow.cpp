@@ -53,7 +53,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//-------------------------类的方法-----------------------
+//-------------------------info类的方法-----------------------
 
 //info类的函数
 info::info(QString const &name, QString const &id)
@@ -325,8 +325,10 @@ void MainWindow::on_delStudentBtn_clicked()
         for (int i = 0; i < select.count(); i++) {
             QModelIndex index = select.at(i);
             QString id = ui->studentTable->item(index.row(), 2)->text();
-            for (int j = 0; j + 3 < ui->studentTable->columnCount(); j++) {
-                //removeGrade(, id);
+            for (int j = 3; j < ui->studentTable->columnCount(); j++) {
+                QTableWidgetItem *item = ui->studentTable->horizontalHeaderItem(j);
+                QVariant v = item->data(Qt::WhatsThisRole);
+                removeGrade(v.toString(), id);
             }
             studentList.remove(id);
 
@@ -372,6 +374,24 @@ void MainWindow::on_delCourseBtn_clicked()
 
 void MainWindow::on_studentTable_cellChanged(int row, int column)
 {
+    /*
+    //当用户更改学生姓名也更改QMap中的姓名
+    if(column == 0)
+    {
+        student temp = studentList[ui->studentTable->item(row, 2)->text()];
+        temp.setName(ui->studentTable->item(row, column)->text());
+        studentList[temp.getID()] = temp;
+        saveStudent();
+    }
+    //更改用户性别也更改QMap中的性别
+    else if(column == 1)
+    {
+        student temp = studentList[ui->studentTable->item(row, 2)->text()];
+        temp.setSex(ui->studentTable->item(row, column)->text());
+        studentList[temp.getID()] = temp;
+        saveStudent();
+    }*/
+    //输入及更改分数
     if(column > 2)
     {
         QTableWidgetItem *item = ui->studentTable->horizontalHeaderItem(column);
