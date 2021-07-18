@@ -117,6 +117,7 @@ private:
     QString studentFileName = "studentList.csv";
     QString compulsoryFileName = "compulsoryList.csv";
     QString electiveFileName = "electiveList.csv";
+    bool init = true;
 };
 
 #endif // MAINWINDOW_H

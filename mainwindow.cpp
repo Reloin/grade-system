@@ -24,10 +24,15 @@ MainWindow::MainWindow(QWidget *parent)
         student temp = s.value();
         ui->studentTable->setItem(row, 0, new QTableWidgetItem(temp.getName()));
         ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(temp.getSex())));
-        ui->studentTable->setItem(row, 2, new QTableWidgetItem(temp.getID()));
+        //让id不可更改
+        QTableWidgetItem *item = new QTableWidgetItem();
+        item->setText(temp.getID());
+        item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+        ui->studentTable->setItem(row, 2, item);
         s++;
     }
 
+    //将必选课的分数展示出来
     QMap<QString, compulsory>::const_iterator c = compulsoryList.constBegin();
     while(c != compulsoryList.constEnd())
     {
@@ -45,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
         }
         c++;
     }
-
+    init = !init;
 }
 
 MainWindow::~MainWindow()
@@ -330,8 +335,10 @@ void MainWindow::on_delStudentBtn_clicked()
                 QVariant v = item->data(Qt::WhatsThisRole);
                 removeGrade(v.toString(), id);
             }
+            //在list中移除学生
             studentList.remove(id);
 
+            //在表中移除学生
             ui->studentTable->removeRow(index.row());
         }
     }
@@ -374,9 +381,9 @@ void MainWindow::on_delCourseBtn_clicked()
 
 void MainWindow::on_studentTable_cellChanged(int row, int column)
 {
-    /*
+    if(init){ return;}
     //当用户更改学生姓名也更改QMap中的姓名
-    if(column == 0)
+    else if(column == 0)
     {
         student temp = studentList[ui->studentTable->item(row, 2)->text()];
         temp.setName(ui->studentTable->item(row, column)->text());
@@ -390,9 +397,9 @@ void MainWindow::on_studentTable_cellChanged(int row, int column)
         temp.setSex(ui->studentTable->item(row, column)->text());
         studentList[temp.getID()] = temp;
         saveStudent();
-    }*/
+    }
     //输入及更改分数
-    if(column > 2)
+    else if(column > 2)
     {
         QTableWidgetItem *item = ui->studentTable->horizontalHeaderItem(column);
         QVariant v = item->data(Qt::WhatsThisRole);
