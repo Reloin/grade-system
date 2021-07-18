@@ -50,6 +50,25 @@ MainWindow::MainWindow(QWidget *parent)
         }
         c++;
     }
+
+    //将选修课的分数展示出来
+    QMap<QString, elective>::const_iterator e = electiveList.constBegin();
+    while(e != electiveList.constEnd())
+    {
+        int col = ui->studentTable->columnCount();
+        elective temp = e.value();
+        ui->studentTable->insertColumn(col);
+        QTableWidgetItem *item = new QTableWidgetItem();
+        item->setText(temp.getName());
+        item->setData(Qt::WhatsThisRole, temp.getID());
+        ui->studentTable->setHorizontalHeaderItem(col, item);
+        for(int row = 0; row < ui->studentTable->rowCount(); row++)
+        {
+            QString id = ui->studentTable->item(row, 2)->text();
+            ui->studentTable->setItem(row, col, new QTableWidgetItem(temp.getGrade(id)));
+        }
+        e++;
+    }
     init = !init;
 }
 
@@ -98,6 +117,11 @@ void compulsory::insertGradeByID(QString const &id, float g)
     grade[id] = g;
 }
 
+void compulsory::removeGradeByID(const QString &id)
+{
+    grade.remove(id);
+}
+
 float compulsory::getGrade(const QString &id)
 {
     return grade[id];
@@ -117,15 +141,27 @@ QStringList compulsory::getGrades()
 
 //----------------elective类的函数----------------
 elective::elective(QString const &name, QString const &id, float c): course(name, id, c){};
+elective::elective(){}
 void elective::insertGradeByID(const QString &id, QString const &g)
 {
     grade[id] = g;
 }
-QString elective::EgetGrade(const QString &id)
+QStringList elective::getGrades()
+{
+    QStringList temp;
+    QMap<QString, QString>::const_iterator i = grade.constBegin();
+    while(i != grade.constEnd())
+    {
+        temp.append(i.key() + ":" + i.value());
+        ++i;
+    }
+    return temp;
+}
+
+QString elective::getGrade(QString const &id)
 {
     return grade[id];
 }
-
 //--------------------------------主界面函数-----------------------------------------
 //增加学生资料的函数
 void MainWindow::addStudent()
@@ -163,18 +199,26 @@ void MainWindow::addCourse()
         int col = ui->studentTable->columnCount();
         ui->studentTable->insertColumn(col);
         QTableWidgetItem *item = new QTableWidgetItem();
+        QString id = dialog.getID();
         item->setText(dialog.getName());
-        item->setData(Qt::WhatsThisRole, dialog.getID());
-        ui->studentTable->setHorizontalHeaderItem(col, item);
 
+        //在id前加c或e，用于识别必选课或选修课
+        qDebug() << dialog.getType();
         if(dialog.getType() == 0)
         {
-            compulsoryList[dialog.getID()] = compulsory(dialog.getName(), dialog.getID(), dialog.getCredit());
-        }/*
+            id = "c" + id;
+            compulsoryList[id] = compulsory(dialog.getName(), id, dialog.getCredit());
+            qDebug() << "Compulsory added";
+        }
         else if(dialog.getType() == 1)
         {
-            courseList.append(elective(dialog.getName(), dialog.getID(), dialog.getCredit()));
-        }*/
+            id = "e" + id;
+            electiveList[id] = elective(dialog.getName(), id, dialog.getCredit());
+            qDebug() << "elecctive added";
+        }
+
+        item->setData(Qt::WhatsThisRole, id);
+        ui->studentTable->setHorizontalHeaderItem(col, item);
         saveCourse();
     }
 }
@@ -234,7 +278,7 @@ void MainWindow::loadStudent()
 void MainWindow::saveCourse()
 {
     //在程序的文档里创建csv文件
-    QFile file(compulsoryFileName);
+    QFile file(courseFileName);
 
     if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
     {
@@ -259,6 +303,22 @@ void MainWindow::saveCourse()
         out << "\n";
         c++;
     }
+
+    QMap<QString, elective>::const_iterator e = electiveList.constBegin();
+    while(e != electiveList.constEnd())
+    {
+        elective temp = e.value();
+        out << temp.getName() << ";" << temp.getID() << ";" << temp.getCredit();
+
+        QStringList grades = temp.getGrades();
+        for (int j = 0; j < grades.count(); j++)
+        {
+            QStringList data = grades.at(j).split(":");
+            out << ";" << data.at(0) << ":" << data.at(1);
+        }
+        out << "\n";
+        e++;
+    }
     file.flush();
     file.close();
 }
@@ -266,7 +326,7 @@ void MainWindow::saveCourse()
 void MainWindow::loadCourse()
 {
     //在程序的文档中寻找list文件
-    QFile file(compulsoryFileName);
+    QFile file(courseFileName);
     if(!file.open(QIODevice::ReadOnly))
     {
         //如果没找到就创建一个空的
@@ -278,29 +338,50 @@ void MainWindow::loadCourse()
 
     //每一行都是一个学生数据，循环每一行读取并存入list
     QTextStream *in = new QTextStream(&file);
+    //保险起见将两个QMap清空
     compulsoryList.empty();
+    electiveList.empty();
 
     QStringList cList = in->readAll().split("\n");
+    //loop文件读取信息
 
     for (int i = 0; i < cList.count() - 1; i++)
     {
+
         QStringList entry = cList.at(i).split(";");
+        QString id = entry.at(1);
 
-        compulsory c = compulsory(entry.at(0), entry.at(1), entry.at(2).toFloat());
-        for (int j = 3; j < entry.count(); j++)
+        //如果是必选课就加入必选课的QMap
+        if(id.at(0) == 'c')
         {
-            QStringList data = entry.at(j).split(":");
-            c.insertGradeByID(data.at(0), data.at(1).toFloat());
+            compulsory c = compulsory(entry.at(0), id, entry.at(2).toFloat());
+            //循环之后的学生成绩数据
+            for (int j = 3; j < entry.count(); j++)
+            {
+                QStringList data = entry.at(j).split(":");
+                c.insertGradeByID(data.at(0), data.at(1).toFloat());
+            }
+            compulsoryList[c.getID()] = c;
         }
-        compulsoryList[c.getID()] = c;
-
-    }
+        //如果是选修课就加入选修课的QMap
+        else if(entry.at(1).at(0) == 'e')
+        {
+            elective e = elective(entry.at(0), entry.at(1), entry.at(2).toFloat());
+            //循环之后的学生成绩数据
+            for (int j = 3; j < entry.count(); j++)
+            {
+                QStringList data = entry.at(j).split(":");
+                e.insertGradeByID(data.at(0), data.at(1));
+            }
+            electiveList[e.getID()] = e;
+            }
+      }
 }
 
 void MainWindow::removeGrade(QString const &courseID, QString const &studentID)
 {
     compulsory c = compulsoryList[courseID];
-    c.grade.remove(studentID);
+    c.removeGradeByID(studentID);
     compulsoryList[courseID] = c;
 }
 
@@ -402,10 +483,20 @@ void MainWindow::on_studentTable_cellChanged(int row, int column)
     else if(column > 2)
     {
         QTableWidgetItem *item = ui->studentTable->horizontalHeaderItem(column);
-        QVariant v = item->data(Qt::WhatsThisRole);
-        compulsory temp = compulsoryList[v.toString()];
-        temp.insertGradeByID(ui->studentTable->item(row, 2)->text(), ui->studentTable->item(row, column)->text().toFloat());
-        compulsoryList[temp.getID()] = temp;
+        QString id = item->data(Qt::WhatsThisRole).toString();
+
+        if(id.at(0) == 'c')
+        {
+            compulsory temp = compulsoryList[id];
+            temp.insertGradeByID(ui->studentTable->item(row, 2)->text(), ui->studentTable->item(row, column)->text().toFloat());
+            compulsoryList[temp.getID()] = temp;
+        }
+        else if(id.at(0) == 'e')
+        {
+            elective temp = electiveList[id];
+            temp.insertGradeByID(ui->studentTable->item(row, 2)->text(), ui->studentTable->item(row, column)->text());
+            electiveList[id] = temp;
+        }
         saveCourse();
     }
 }

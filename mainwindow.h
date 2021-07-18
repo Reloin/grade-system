@@ -59,23 +59,27 @@ public:
 class compulsory : public course
 {
 public:
-    QMap<QString, float> grade;
     compulsory(QString const &name, QString const id, float c);
     compulsory();
     //~compulsory();
     void insertGradeByID(QString const &id, float g);
+    void removeGradeByID(QString const &id);
     QStringList getGrades();
     float getGrade(QString const &id);
+private:
+    QMap<QString, float> grade;
 };
 
 class elective : public course
 {
-private:
-    QMap<QString, QString> grade;//p or f
 public:
     elective(QString const &name, QString const &id, float c);
+    elective();
     void insertGradeByID(QString const &id, QString const &g);
-    QString EgetGrade(QString const &id);
+    QStringList getGrades();
+    QString getGrade(QString const &id);
+private:
+    QMap<QString, QString> grade;//p or f
 };
 
 //--------------------------------MainWindow类-----------------
@@ -115,8 +119,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QString studentFileName = "studentList.csv";
-    QString compulsoryFileName = "compulsoryList.csv";
-    QString electiveFileName = "electiveList.csv";
+    QString courseFileName = "courseList.csv";
     bool init = true;
 };
 
