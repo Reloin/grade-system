@@ -76,6 +76,7 @@ public:
     elective(QString const &name, QString const &id, float c);
     elective();
     void insertGradeByID(QString const &id, QString const &g);
+    void removeGradeByID(QString const &id);
     QStringList getGrades();
     QString getGrade(QString const &id);
 private:

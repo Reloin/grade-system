@@ -146,6 +146,10 @@ void elective::insertGradeByID(const QString &id, QString const &g)
 {
     grade[id] = g;
 }
+void elective::removeGradeByID(QString const &id)
+{
+    grade.remove(id);
+}
 QStringList elective::getGrades()
 {
     QStringList temp;
@@ -417,8 +421,19 @@ void MainWindow::on_delStudentBtn_clicked()
             QString id = ui->studentTable->item(index.row(), 2)->text();
             for (int j = 3; j < ui->studentTable->columnCount(); j++) {
                 QTableWidgetItem *item = ui->studentTable->horizontalHeaderItem(j);
-                QVariant v = item->data(Qt::WhatsThisRole);
-                removeGrade(v.toString(), id);
+                QString courseID = item->data(Qt::WhatsThisRole).toString();
+                if(courseID.at(0) == 'c')
+                {
+                    compulsory c = compulsoryList[courseID];
+                    c.removeGradeByID(id);
+                    compulsoryList[courseID] = c;
+                }
+                else if(courseID.at(0) == 'e')
+                {
+                    elective e = electiveList[courseID];
+                    e.removeGradeByID(id);
+                    electiveList[courseID] = e;
+                }
             }
             //在list中移除学生
             studentList.remove(id);
