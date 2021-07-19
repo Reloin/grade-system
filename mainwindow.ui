@@ -25,116 +25,129 @@
   <property name="locale">
    <locale language="Chinese" country="China"/>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <widget class="QTableWidget" name="studentTable">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>40</y>
-      <width>761</width>
-      <height>451</height>
-     </rect>
-    </property>
-    <column>
-     <property name="text">
-      <string>学生姓名</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>性别</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>学号</string>
-     </property>
-    </column>
-   </widget>
-   <widget class="QComboBox" name="comboBox">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>10</y>
-      <width>761</width>
-      <height>22</height>
-     </rect>
-    </property>
+  <widget class="QWidget" name="widget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <property name="text">
-      <string>大一</string>
-     </property>
+     <widget class="QComboBox" name="comboBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <item>
+       <property name="text">
+        <string>大一</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>大二</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>大三</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>大四</string>
+       </property>
+      </item>
+     </widget>
     </item>
     <item>
-     <property name="text">
-      <string>大二</string>
-     </property>
+     <widget class="QTableWidget" name="studentTable">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <column>
+       <property name="text">
+        <string>学生姓名</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>性别</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>学号</string>
+       </property>
+      </column>
+     </widget>
     </item>
     <item>
-     <property name="text">
-      <string>大三</string>
-     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="1">
+       <widget class="QPushButton" name="delStudentBtn">
+        <property name="text">
+         <string>删除学生</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="delCourseBtn">
+        <property name="text">
+         <string>删除课程</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="addStudentBtn">
+        <property name="text">
+         <string>新增学生</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="AddCourseBtn">
+        <property name="text">
+         <string>新增课程</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
     </item>
-    <item>
-     <property name="text">
-      <string>大四</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QPushButton" name="addStudentBtn">
-    <property name="geometry">
-     <rect>
-      <x>600</x>
-      <y>510</y>
-      <width>80</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>新增学生</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="delStudentBtn">
-    <property name="geometry">
-     <rect>
-      <x>600</x>
-      <y>540</y>
-      <width>80</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>删除学生</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="AddCourseBtn">
-    <property name="geometry">
-     <rect>
-      <x>700</x>
-      <y>510</y>
-      <width>80</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>新增课程</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="delCourseBtn">
-    <property name="geometry">
-     <rect>
-      <x>700</x>
-      <y>540</y>
-      <width>80</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>删除课程</string>
-    </property>
-   </widget>
+   </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
@@ -153,6 +166,7 @@
    </widget>
    <addaction name="menu"/>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionxin">
    <property name="text">
     <string>新增学生</string>
