@@ -117,6 +117,8 @@ private slots:
 
     void on_studentTable_cellChanged(int row, int column);
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QString studentFileName = "studentList.csv";

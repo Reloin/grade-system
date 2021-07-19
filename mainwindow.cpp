@@ -520,3 +520,17 @@ void MainWindow::on_studentTable_cellChanged(int row, int column)
     }
 }
 
+
+void MainWindow::on_pushButton_clicked()
+{
+
+    QModelIndexList select = ui->studentTable->selectionModel()->selectedColumns();
+    for (int i = 0; i < select.count(); i++) {
+        int col = select.at(i).column();
+        if(col != 1)
+        {
+            ui->studentTable->sortItems(col, Qt::AscendingOrder);
+        }
+    }
+}
+

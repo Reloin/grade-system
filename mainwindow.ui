@@ -90,36 +90,29 @@
     </item>
     <item>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="1">
-       <widget class="QPushButton" name="delStudentBtn">
-        <property name="text">
-         <string>删除学生</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
+      <item row="1" column="3">
        <widget class="QPushButton" name="delCourseBtn">
         <property name="text">
          <string>删除课程</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="addStudentBtn">
+      <item row="0" column="0">
+       <widget class="QPushButton" name="pushButton">
         <property name="text">
-         <string>新增学生</string>
+         <string>排序</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
+      <item row="0" column="3">
        <widget class="QPushButton" name="AddCourseBtn">
         <property name="text">
          <string>新增课程</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <spacer name="horizontalSpacer">
+      <item row="0" column="1">
+       <spacer name="horizontalSpacer_3">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -131,18 +124,19 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="0">
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="delStudentBtn">
+        <property name="text">
+         <string>删除学生</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="addStudentBtn">
+        <property name="text">
+         <string>新增学生</string>
         </property>
-       </spacer>
+       </widget>
       </item>
      </layout>
     </item>
