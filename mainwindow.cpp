@@ -171,6 +171,7 @@ void MainWindow::addStudent()
     dialog.setModal(true);
     dialog.exec();
 
+    init = true;
     if(dialog.Accepted)
     {
         //获取数据并显示与存进List里
@@ -184,6 +185,7 @@ void MainWindow::addStudent()
         studentList[temp.getID()] = temp;
         saveStudent();
     }
+    init = false;
 }
 
 void MainWindow::addCourse()
@@ -193,6 +195,7 @@ void MainWindow::addCourse()
     dialog.setModal(true);
     dialog.exec();
 
+    init = true;
     if(dialog.Accepted)
     {
         //获取并存储课程数据
@@ -221,6 +224,7 @@ void MainWindow::addCourse()
         ui->studentTable->setHorizontalHeaderItem(col, item);
         saveCourse();
     }
+    init = false;
 }
 
 void MainWindow::saveStudent()
