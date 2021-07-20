@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>277</width>
-    <height>189</height>
+    <height>240</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>140</y>
+     <y>180</y>
      <width>231</width>
      <height>32</height>
     </rect>
@@ -105,7 +105,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>100</y>
+     <y>140</y>
      <width>47</width>
      <height>21</height>
     </rect>
@@ -118,7 +118,7 @@
    <property name="geometry">
     <rect>
      <x>70</x>
-     <y>100</y>
+     <y>140</y>
      <width>181</width>
      <height>21</height>
     </rect>
@@ -128,6 +128,49 @@
    </property>
    <property name="placeholderText">
     <string>10位数的号码</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="yearBox">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>100</y>
+     <width>181</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>大一</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>大二</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>大三</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>大四</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>100</y>
+     <width>47</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>年级</string>
    </property>
   </widget>
  </widget>

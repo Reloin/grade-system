@@ -20,6 +20,11 @@ QString addStudentDialog::getName()
     return ui->studentNameBox->text();
 }
 
+int addStudentDialog::getYear()
+{
+    return ui->yearBox->currentIndex() + 1;
+}
+
 QString addStudentDialog::getSex()
 {
     switch (ui->genderBox->currentIndex()) {

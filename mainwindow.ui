@@ -43,6 +43,11 @@
       </property>
       <item>
        <property name="text">
+        <string>全年纪</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>大一</string>
        </property>
       </item>
@@ -79,6 +84,11 @@
       <column>
        <property name="text">
         <string>性别</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>年纪</string>
        </property>
       </column>
       <column>

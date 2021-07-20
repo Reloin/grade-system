@@ -16,6 +16,7 @@ public:
     ~addStudentDialog();
     QString getName();
     QString getSex();
+    int getYear();
     QString getID();
 
 private slots:

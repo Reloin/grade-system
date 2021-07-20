@@ -16,7 +16,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-
+QString yearConverter(int num);
 //----------------------info类，用于记录名字与ID----------------------------------------------
 class info
 {
@@ -34,13 +34,16 @@ public:
 class student : public info
 {
     private:
+        int year;
         QString sex;
     public:
         student();
-        student(QString const &name,QString const &sex, QString const &id);
+        student(QString const &name, QString const &sex, int y, QString const &id);
         void setName(QString const &name);
+        void setYear(int y);
         void setSex(QString const &sex);
         void setId(QString const &id);
+        int getYear();
         QString getSex();
 };
 
@@ -118,6 +121,8 @@ private slots:
     void on_studentTable_cellChanged(int row, int column);
 
     void on_pushButton_clicked();
+
+    void on_comboBox_currentIndexChanged(int index);
 
 private:
     Ui::MainWindow *ui;

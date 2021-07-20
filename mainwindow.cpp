@@ -24,11 +24,12 @@ MainWindow::MainWindow(QWidget *parent)
         student temp = s.value();
         ui->studentTable->setItem(row, 0, new QTableWidgetItem(temp.getName()));
         ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(temp.getSex())));
+        ui->studentTable->setItem(row, 2, new QTableWidgetItem(yearConverter(temp.getYear())));
         //让id不可更改
         QTableWidgetItem *item = new QTableWidgetItem();
         item->setText(temp.getID());
         item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-        ui->studentTable->setItem(row, 2, item);
+        ui->studentTable->setItem(row, 3, item);
         s++;
     }
 
@@ -45,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->studentTable->setHorizontalHeaderItem(col, item);
         for(int row = 0; row < ui->studentTable->rowCount(); row++)
         {
-            QString id = ui->studentTable->item(row, 2)->text();
+            QString id = ui->studentTable->item(row, 3)->text();
             ui->studentTable->setItem(row, col, new QTableWidgetItem(QString::number(temp.getGrade(id))));
         }
         c++;
@@ -64,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->studentTable->setHorizontalHeaderItem(col, item);
         for(int row = 0; row < ui->studentTable->rowCount(); row++)
         {
-            QString id = ui->studentTable->item(row, 2)->text();
+            QString id = ui->studentTable->item(row, 3)->text();
             ui->studentTable->setItem(row, col, new QTableWidgetItem(temp.getGrade(id)));
         }
         e++;
@@ -77,6 +78,21 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+QString yearConverter(int num)
+{
+    switch (num) {
+    case 1:
+        return "大一";
+    case 2:
+        return "大二";
+    case 3:
+        return "大三";
+    case 4:
+        return "大四";
+    default:
+        return "";
+    }
+}
 //-------------------------info类的方法-----------------------
 
 //info类的函数
@@ -91,7 +107,7 @@ QString info::getID(){ return id; } //返回学生的学号
 QString info::getName(){ return name;} //返回学生姓名
 
 //----------------student类的函数----------------
-student::student(QString const &name,const QString &sex, QString const &id): info(name, id)
+student::student(QString const &name,const QString &sex, int y, QString const &id): info(name, id), year(y)
 {
     this->sex = sex;
 }
@@ -100,7 +116,9 @@ student::student(){}
 //返回一些private里的数据
 void student::setName(const QString &name){ this->name = name; }
 void student::setSex(const QString &sex){ this->sex = sex; }
+void student::setYear(int y){ year = y; }
 void student::setId(const QString &id){ this->id = id;}
+int student::getYear(){ return year; }
 QString student::getSex(){ return sex; }
 
 
@@ -180,12 +198,16 @@ void MainWindow::addStudent()
     if(result == QDialog::Accepted)
     {
         //获取数据并显示与存进List里
-        student temp = student(dialog.getName(), dialog.getSex(), dialog.getID());
+        student temp = student(dialog.getName(), dialog.getSex(), dialog.getYear(), dialog.getID());
         int row = ui->studentTable->rowCount();
         ui->studentTable->insertRow(row);
         ui->studentTable->setItem(row, 0, new QTableWidgetItem(temp.getName()));
         ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(temp.getSex())));
-        ui->studentTable->setItem(row, 2, new QTableWidgetItem(temp.getID()));
+        ui->studentTable->setItem(row, 2, new QTableWidgetItem(yearConverter(temp.getYear())));
+        QTableWidgetItem *item = new QTableWidgetItem();
+        item->setText(temp.getID());
+        item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+        ui->studentTable->setItem(row, 3, item);
 
         studentList[temp.getID()] = temp;
         saveStudent();
@@ -211,18 +233,15 @@ void MainWindow::addCourse()
         item->setText(dialog.getName());
 
         //在id前加c或e，用于识别必选课或选修课
-        qDebug() << dialog.getType();
         if(dialog.getType() == 0)
         {
             id = "c" + id;
             compulsoryList[id] = compulsory(dialog.getName(), id, dialog.getCredit());
-            qDebug() << "Compulsory added";
         }
         else if(dialog.getType() == 1)
         {
             id = "e" + id;
             electiveList[id] = elective(dialog.getName(), id, dialog.getCredit());
-            qDebug() << "elecctive added";
         }
 
         item->setData(Qt::WhatsThisRole, id);
@@ -249,7 +268,7 @@ void MainWindow::saveStudent()
     while (s != studentList.constEnd())
     {
         student temp = s.value();
-        out << temp.getName() << ";" << temp.getSex() << ";" << temp.getID() << "\n";
+        out << temp.getName() << ";" << temp.getSex() << ";"  << temp.getYear() << ";" << temp.getID() << "\n";
         s++;
     }
     file.flush();
@@ -278,8 +297,8 @@ void MainWindow::loadStudent()
     for (int i = 0; i < sList.count() - 1; i++)
     {
         QStringList data = sList.at(i).split(";");
-        //0:name, 1:sex, 2:id
-        studentList[data.at(2)] = student(data.at(0), data.at(1), data.at(2));
+        //0:name, 1:sex, 3:year, 3:id
+        studentList[data.at(3)] = student(data.at(0), data.at(1), data.at(2).toInt(),data.at(3));
     }
 
 }
@@ -375,7 +394,7 @@ void MainWindow::loadCourse()
         //如果是选修课就加入选修课的QMap
         else if(entry.at(1).at(0) == 'e')
         {
-            elective e = elective(entry.at(0), entry.at(1), entry.at(2).toFloat());
+            elective e = elective(entry.at(0), id, entry.at(2).toFloat());
             //循环之后的学生成绩数据
             for (int j = 3; j < entry.count(); j++)
             {
@@ -419,8 +438,8 @@ void MainWindow::on_delStudentBtn_clicked()
         QModelIndexList select = ui->studentTable->selectionModel()->selectedRows();
         for (int i = 0; i < select.count(); i++) {
             QModelIndex index = select.at(i);
-            QString id = ui->studentTable->item(index.row(), 2)->text();
-            for (int j = 3; j < ui->studentTable->columnCount(); j++) {
+            QString id = ui->studentTable->item(index.row(), 3)->text();
+            for (int j = 4; j < ui->studentTable->columnCount(); j++) {
                 QTableWidgetItem *item = ui->studentTable->horizontalHeaderItem(j);
                 QString courseID = item->data(Qt::WhatsThisRole).toString();
                 if(courseID.at(0) == 'c')
@@ -486,7 +505,7 @@ void MainWindow::on_studentTable_cellChanged(int row, int column)
     //当用户更改学生姓名也更改QMap中的姓名
     else if(column == 0)
     {
-        student temp = studentList[ui->studentTable->item(row, 2)->text()];
+        student temp = studentList[ui->studentTable->item(row, 3)->text()];
         temp.setName(ui->studentTable->item(row, column)->text());
         studentList[temp.getID()] = temp;
         saveStudent();
@@ -494,13 +513,13 @@ void MainWindow::on_studentTable_cellChanged(int row, int column)
     //更改用户性别也更改QMap中的性别
     else if(column == 1)
     {
-        student temp = studentList[ui->studentTable->item(row, 2)->text()];
+        student temp = studentList[ui->studentTable->item(row, 3)->text()];
         temp.setSex(ui->studentTable->item(row, column)->text());
         studentList[temp.getID()] = temp;
         saveStudent();
     }
     //输入及更改分数
-    else if(column > 2)
+    else if(column > 3)
     {
         QTableWidgetItem *item = ui->studentTable->horizontalHeaderItem(column);
         QString id = item->data(Qt::WhatsThisRole).toString();
@@ -508,13 +527,13 @@ void MainWindow::on_studentTable_cellChanged(int row, int column)
         if(id.at(0) == 'c')
         {
             compulsory temp = compulsoryList[id];
-            temp.insertGradeByID(ui->studentTable->item(row, 2)->text(), ui->studentTable->item(row, column)->text().toFloat());
+            temp.insertGradeByID(ui->studentTable->item(row, 3)->text(), ui->studentTable->item(row, column)->text().toFloat());
             compulsoryList[temp.getID()] = temp;
         }
         else if(id.at(0) == 'e')
         {
             elective temp = electiveList[id];
-            temp.insertGradeByID(ui->studentTable->item(row, 2)->text(), ui->studentTable->item(row, column)->text());
+            temp.insertGradeByID(ui->studentTable->item(row, 3)->text(), ui->studentTable->item(row, column)->text());
             electiveList[id] = temp;
         }
         saveCourse();
@@ -532,6 +551,43 @@ void MainWindow::on_pushButton_clicked()
         //让排序顺着后逆着
         ui->studentTable->sortItems(col, ascend?Qt::AscendingOrder:Qt::DescendingOrder);
         ascend = !ascend;
+    }
+}
+
+
+void MainWindow::on_comboBox_currentIndexChanged(int index)
+{
+    QTableWidget *table = ui->studentTable;
+    switch (index) {
+    case 0:
+        for (int i = 0; i < table->rowCount(); i++) {
+            table->showRow(i);
+        }
+        break;
+    case 1:
+        for (int i = 0; i < table->rowCount(); i++) {
+            if(QString::compare(table->item(i, 2)->text(), "大一", Qt::CaseInsensitive)) table->hideRow(i);
+            else if(QString::compare(table->item(i, 2)->text(), "大一", Qt::CaseInsensitive) == 0) table->showRow(i);
+        }
+        break;
+    case 2:
+        for (int i = 0; i < table->rowCount(); i++) {
+            if(QString::compare(table->item(i, 2)->text(), "大二", Qt::CaseInsensitive)) table->hideRow(i);
+            else if(QString::compare(table->item(i, 2)->text(), "大二", Qt::CaseInsensitive) == 0) table->showRow(i);
+        }
+        break;
+    case 3:
+        for (int i = 0; i < table->rowCount(); i++) {
+            if(QString::compare(table->item(i, 2)->text(), "大三", Qt::CaseInsensitive)) table->hideRow(i);
+            else if(QString::compare(table->item(i, 2)->text(), "大三", Qt::CaseInsensitive) == 0) table->showRow(i);
+        }
+        break;
+    case 4:
+        for (int i = 0; i < table->rowCount(); i++) {
+            if(QString::compare(table->item(i, 2)->text(), "大四", Qt::CaseInsensitive)) table->hideRow(i);
+            else if(QString::compare(table->item(i, 2)->text(), "大四", Qt::CaseInsensitive) == 0) table->showRow(i);
+        }
+        break;
     }
 }
 
