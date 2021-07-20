@@ -34,3 +34,9 @@ QString addStudentDialog::getID()
 {
     return ui->idTextBox->text();
 }
+
+void addStudentDialog::on_buttonBox_rejected()
+{
+    close();
+}
+

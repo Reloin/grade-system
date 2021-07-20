@@ -124,6 +124,7 @@ private:
     QString studentFileName = "studentList.csv";
     QString courseFileName = "courseList.csv";
     bool init = true;
+    bool ascend = true;
 };
 
 #endif // MAINWINDOW_H

@@ -173,10 +173,11 @@ void MainWindow::addStudent()
     //弹出框框输入学生数据
     addStudentDialog dialog;
     dialog.setModal(true);
-    dialog.exec();
+    auto result = dialog.exec();
 
     init = true;
-    if(dialog.Accepted)
+
+    if(result == QDialog::Accepted)
     {
         //获取数据并显示与存进List里
         student temp = student(dialog.getName(), dialog.getSex(), dialog.getID());
@@ -197,10 +198,10 @@ void MainWindow::addCourse()
     //弹出框框输入课程数据
     courseDialog dialog;
     dialog.setModal(true);
-    dialog.exec();
+    auto result = dialog.exec();
 
     init = true;
-    if(dialog.Accepted)
+    if(result == QDialog::Accepted)
     {
         //获取并存储课程数据
         int col = ui->studentTable->columnCount();
@@ -525,12 +526,12 @@ void MainWindow::on_pushButton_clicked()
 {
 
     QModelIndexList select = ui->studentTable->selectionModel()->selectedColumns();
-    for (int i = 0; i < select.count(); i++) {
-        int col = select.at(i).column();
-        if(col != 1)
-        {
-            ui->studentTable->sortItems(col, Qt::AscendingOrder);
-        }
+    int col = select.at(0).column();
+    if(col != 1 && select.count() == 1)
+    {
+        //让排序顺着后逆着
+        ui->studentTable->sortItems(col, ascend?Qt::AscendingOrder:Qt::DescendingOrder);
+        ascend = !ascend;
     }
 }
 

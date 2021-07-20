@@ -18,6 +18,9 @@ public:
     QString getSex();
     QString getID();
 
+private slots:
+    void on_buttonBox_rejected();
+
 private:
     Ui::addStudentDialog *ui;
 };
