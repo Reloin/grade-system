@@ -436,7 +436,7 @@ void MainWindow::on_delStudentBtn_clicked()
     if(reply == QMessageBox::Yes)
     {
         QModelIndexList select = ui->studentTable->selectionModel()->selectedRows();
-        for (int i = 0; i < select.count(); i++) {
+        for (int i = select.count() - 1; i >= 0; i--) {
             QModelIndex index = select.at(i);
             QString id = ui->studentTable->item(index.row(), 3)->text();
             for (int j = 4; j < ui->studentTable->columnCount(); j++) {
@@ -489,7 +489,7 @@ void MainWindow::on_delCourseBtn_clicked()
     if(reply == QMessageBox::Yes)
     {
         QModelIndexList select = ui->studentTable->selectionModel()->selectedColumns();
-        for (int i = 0; i < select.count(); i++) {
+        for (int i = select.count() - 1; i >= 0; i--) {
             QModelIndex index = select.at(i);
             ui->studentTable->removeColumn(index.column());
 
