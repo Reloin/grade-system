@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
         student temp = s.value();
         ui->studentTable->setItem(row, 0, new QTableWidgetItem(temp.getName()));
         ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(temp.getSex())));
-        ui->studentTable->setItem(row, 2, new QTableWidgetItem(yearConverter(temp.getYear())));
+        ui->studentTable->setItem(row, 2, new QTableWidgetItem(num2year(temp.getYear())));
         //让id不可更改
         QTableWidgetItem *item = new QTableWidgetItem();
         item->setText(temp.getID());
@@ -78,7 +78,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-QString yearConverter(int num)
+QString num2year(int num)
 {
     switch (num) {
     case 1:
@@ -92,6 +92,15 @@ QString yearConverter(int num)
     default:
         return "";
     }
+}
+
+int year2num(QString const &year)
+{
+    if(!QString::compare(year, "大一")) return 1;
+    else if(!QString::compare(year, "大二")) return 2;
+    else if(!QString::compare(year, "大三")) return 3;
+    else if(!QString::compare(year, "大四")) return 4;
+    return 0;
 }
 //-------------------------info类的方法-----------------------
 
@@ -203,7 +212,7 @@ void MainWindow::addStudent()
         ui->studentTable->insertRow(row);
         ui->studentTable->setItem(row, 0, new QTableWidgetItem(temp.getName()));
         ui->studentTable->setItem(row, 1, new QTableWidgetItem(QString(temp.getSex())));
-        ui->studentTable->setItem(row, 2, new QTableWidgetItem(yearConverter(temp.getYear())));
+        ui->studentTable->setItem(row, 2, new QTableWidgetItem(num2year(temp.getYear())));
         QTableWidgetItem *item = new QTableWidgetItem();
         item->setText(temp.getID());
         item->setFlags(item->flags() ^ Qt::ItemIsEditable);
@@ -515,6 +524,13 @@ void MainWindow::on_studentTable_cellChanged(int row, int column)
     {
         student temp = studentList[ui->studentTable->item(row, 3)->text()];
         temp.setSex(ui->studentTable->item(row, column)->text());
+        studentList[temp.getID()] = temp;
+        saveStudent();
+    }
+    else if(column == 2)
+    {
+        student temp = studentList[ui->studentTable->item(row, 3)->text()];
+        temp.setYear(year2num(ui->studentTable->item(row, column)->text()));
         studentList[temp.getID()] = temp;
         saveStudent();
     }
