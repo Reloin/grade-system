@@ -16,7 +16,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-QString yearConverter(int num);
+QString num2year(int num);
+int year2num(QString const &year);
 //----------------------info类，用于记录名字与ID----------------------------------------------
 class info
 {
