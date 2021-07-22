@@ -491,6 +491,15 @@ void MainWindow::on_delCourseBtn_clicked()
         QModelIndexList select = ui->studentTable->selectionModel()->selectedColumns();
         for (int i = 0; i < select.count(); i++) {
             QModelIndex index = select.at(i);
+            QString courseID = ui->studentTable->horizontalHeaderItem(index.column())->data(Qt::WhatsThisRole).toString();
+            if(courseID.at(0) == 'c')
+            {
+                compulsoryList.remove(courseID);
+            }
+            else if(courseID.at(0) == 'e')
+            {
+                electiveList.remove(courseID);
+            }
             ui->studentTable->removeColumn(index.column());
 
         }
